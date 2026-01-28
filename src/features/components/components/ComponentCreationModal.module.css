@@ -1,0 +1,131 @@
+/* Form Groups */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    color: var(--warm-700);
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.875rem;
+    border: 2px solid var(--warm-200);
+    border-radius: 10px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--coral-500);
+}
+
+.form-hint {
+    font-size: 0.75rem;
+    color: var(--warm-600);
+    margin-top: 0.5rem;
+}
+
+/* Quantity Input */
+.quantity-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    max-width: 200px;
+}
+
+.quantity-button {
+    width: 44px;
+    height: 44px;
+    border: 2px solid var(--coral-500);
+    background: white;
+    color: var(--coral-600);
+    border-radius: 8px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quantity-button:hover:not(:disabled) {
+    background: var(--coral-50);
+}
+
+.quantity-button:active:not(:disabled) {
+    transform: scale(0.95);
+}
+
+.quantity-button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.quantity-input {
+    flex: 1;
+    padding: 0.75rem;
+    border: 2px solid var(--warm-200);
+    border-radius: 8px;
+    font-size: 1.125rem;
+    font-weight: 600;
+    text-align: center;
+    width: 70px;
+}
+
+.quantity-input:focus {
+    outline: none;
+    border-color: var(--coral-500);
+}
+
+/* Remove spinner arrows */
+.quantity-input::-webkit-inner-spin-button,
+.quantity-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.quantity-input[type=number] {
+    -moz-appearance: textfield;
+}
+
+/* Error Message */
+.error-message {
+    background: #FEE2E2;
+    border: 2px solid #EF4444;
+    color: #991B1B;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+}
+
+/* Modal Actions */
+.modal-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.modal-actions button {
+    flex: 1;
+}
+
+/* Mobile Optimization */
+@media (max-width: 640px) {
+    .quantity-input-wrapper {
+        max-width: 100%;
+    }
+
+    .quantity-button {
+        width: 48px;
+        height: 48px;
+    }
+}

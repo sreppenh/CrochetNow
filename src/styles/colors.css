@@ -1,0 +1,60 @@
+/**
+ * CrochetGenius Color Palette
+ * Soft, warm colors perfect for amigurumi
+ */
+
+:root {
+    /* Primary: Soft Coral/Peach */
+    --coral-50: #FFF5F2;
+    --coral-100: #FFE8E0;
+    --coral-200: #FFC9B8;
+    --coral-300: #FFAA90;
+    --coral-400: #FF9B7D;
+    --coral-500: #FF8B68;  /* Main brand color */
+    --coral-600: #FF7A52;
+    --coral-700: #E65A2E;
+    --coral-800: #CC4A1F;
+    
+    /* Secondary: Soft Mint */
+    --mint-50: #F0FFF4;
+    --mint-100: #C6F6D5;
+    --mint-200: #9AE6B4;
+    --mint-300: #68D391;
+    --mint-400: #48BB78;
+    --mint-500: #38A169;
+    --mint-600: #2F855A;
+    --mint-700: #276749;
+    
+    /* Neutrals: Warm Gray */
+    --warm-50: #FAFAF9;
+    --warm-100: #F5F5F4;
+    --warm-200: #E7E5E4;
+    --warm-300: #D6D3D1;
+    --warm-400: #A8A29E;
+    --warm-500: #78716C;
+    --warm-600: #57534E;
+    --warm-700: #44403C;
+    --warm-800: #292524;
+    --warm-900: #1C1917;
+    
+    /* Semantic Colors */
+    --success: var(--mint-500);
+    --error: #EF4444;
+    --warning: #F59E0B;
+    --info: #3B82F6;
+    
+    /* Backgrounds */
+    --bg-primary: white;
+    --bg-secondary: var(--warm-50);
+    --bg-accent: var(--coral-50);
+    
+    /* Text */
+    --text-primary: var(--warm-800);
+    --text-secondary: var(--warm-600);
+    --text-tertiary: var(--warm-500);
+    
+    /* Borders */
+    --border-light: var(--warm-200);
+    --border-medium: var(--warm-300);
+    --border-dark: var(--warm-400);
+}

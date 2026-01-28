@@ -1,0 +1,57 @@
+/* Base Card */
+.card {
+    background: white;
+    border: 2px solid var(--warm-200);
+    border-radius: 12px;
+    padding: 1.25rem;
+    transition: all 0.2s;
+}
+
+/* Default Card */
+.card-default {
+    /* Base styles already applied */
+}
+
+/* Interactive Card */
+.card-interactive {
+    cursor: pointer;
+}
+
+.card-interactive:hover {
+    border-color: var(--coral-500);
+    box-shadow: 0 4px 12px rgba(255, 139, 104, 0.15);
+    transform: translateY(-2px);
+}
+
+.card-interactive:active {
+    transform: translateY(0);
+}
+
+/* Info Card */
+.card-info {
+    background: var(--mint-50);
+    border-color: var(--mint-500);
+}
+
+/* Clickable (generic) */
+.card-clickable {
+    cursor: pointer;
+}
+
+.card-clickable:hover {
+    border-color: var(--coral-400);
+    box-shadow: 0 2px 8px rgba(255, 139, 104, 0.1);
+}
+
+/* Focus styles for keyboard navigation */
+.card-clickable:focus {
+    outline: 2px solid var(--coral-500);
+    outline-offset: 2px;
+}
+
+/* Mobile Optimization */
+@media (max-width: 640px) {
+    .card {
+        padding: 1rem;
+    }
+}

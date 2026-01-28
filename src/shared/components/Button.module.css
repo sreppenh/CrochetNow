@@ -1,0 +1,71 @@
+/* Base Button Styles */
+.btn {
+    padding: 0.875rem 1.5rem;
+    border-radius: 10px;
+    border: none;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 48px;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn:not(:disabled):active {
+    transform: translateY(1px);
+}
+
+/* Primary Button */
+.btn-primary {
+    background: var(--coral-500);
+    color: white;
+}
+
+.btn-primary:not(:disabled):hover {
+    background: var(--coral-600);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 139, 104, 0.3);
+}
+
+/* Secondary Button */
+.btn-secondary {
+    background: white;
+    color: var(--coral-600);
+    border: 2px solid var(--coral-500);
+}
+
+.btn-secondary:not(:disabled):hover {
+    background: var(--coral-50);
+}
+
+/* Tertiary Button */
+.btn-tertiary {
+    background: var(--warm-100);
+    color: var(--warm-700);
+}
+
+.btn-tertiary:not(:disabled):hover {
+    background: var(--warm-200);
+}
+
+/* Full Width */
+.btn-full-width {
+    width: 100%;
+}
+
+/* Mobile Optimization */
+@media (max-width: 640px) {
+    .btn {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.9375rem;
+    }
+}

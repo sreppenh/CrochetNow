@@ -1,0 +1,95 @@
+/* Project Detail Container */
+.project-detail {
+    min-height: 100vh;
+    background: var(--warm-50);
+}
+
+/* Content Area */
+.content {
+    padding: 1.5rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Section Header */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--warm-800);
+}
+
+/* Component List */
+.component-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Component Card Content */
+.component-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.component-name {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--warm-800);
+}
+
+.component-quantity-badge {
+    background: var(--mint-500);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.component-meta {
+    font-size: 0.875rem;
+    color: var(--warm-600);
+}
+
+/* Help Note */
+.help-note {
+    background: var(--mint-50);
+    border-left: 4px solid var(--mint-500);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1.5rem;
+    font-size: 0.875rem;
+    color: var(--warm-700);
+    line-height: 1.6;
+}
+
+.help-note strong {
+    color: var(--mint-700);
+}
+
+/* Mobile Optimization */
+@media (max-width: 640px) {
+    .content {
+        padding: 1.25rem;
+    }
+
+    .section-header {
+        font-size: 1rem;
+    }
+
+    .component-name {
+        font-size: 1rem;
+    }
+
+    .component-quantity-badge {
+        font-size: 0.6875rem;
+        padding: 0.2rem 0.625rem;
+    }
+}

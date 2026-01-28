@@ -1,0 +1,49 @@
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    color: var(--warm-600);
+}
+
+.empty-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    line-height: 1;
+}
+
+.empty-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--warm-700);
+    margin: 0 0 0.5rem 0;
+}
+
+.empty-description {
+    font-size: 0.9375rem;
+    color: var(--warm-600);
+    margin: 0 0 1.5rem 0;
+    line-height: 1.5;
+}
+
+.empty-action {
+    margin-top: 1.5rem;
+}
+
+/* Mobile Optimization */
+@media (max-width: 640px) {
+    .empty-state {
+        padding: 2rem 1rem;
+    }
+
+    .empty-icon {
+        font-size: 3rem;
+    }
+
+    .empty-title {
+        font-size: 1.125rem;
+    }
+
+    .empty-description {
+        font-size: 0.875rem;
+    }
+}

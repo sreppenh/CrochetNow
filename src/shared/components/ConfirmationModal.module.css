@@ -1,0 +1,28 @@
+/* Confirmation Modal Content */
+.confirmation-content {
+    padding: 0.5rem 0;
+}
+
+.confirmation-message {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--warm-700);
+    margin-bottom: 1.5rem;
+}
+
+/* Confirmation Actions */
+.confirmation-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+/* Danger Button Variant */
+.button-danger {
+    background: #DC2626 !important;
+    border-color: #DC2626 !important;
+}
+
+.button-danger:hover {
+    background: #B91C1C !important;
+    border-color: #B91C1C !important;
+}

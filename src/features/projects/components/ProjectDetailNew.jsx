@@ -1,0 +1,173 @@
+import React, { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useProjects } from '../../projects/context/ProjectsContext';
+import { ACTIONS } from '../../projects/hooks/projectsReducer';
+import { PageHeader, Card, EmptyState, Button } from '../../../shared/components';
+import AddComponentModal from '../../components/components/AddComponentModal';
+import EditProjectModal from './EditProjectModal';
+import { YARN_COLORS } from '../../../shared/data/yarnColors';
+import styles from './ProjectDetail.module.css';
+
+function ProjectDetail() {
+    const { projectId } = useParams();
+    const navigate = useNavigate();
+    const { state, dispatch } = useProjects();
+    const [showAddComponentModal, setShowAddComponentModal] = useState(false);
+    const [showEditProject, setShowEditProject] = useState(false);
+    const [showMenu, setShowMenu] = useState(false);
+
+    // Find the current project
+    const project = state.projects.find(p => p.id === projectId);
+
+    // If not found, redirect
+    if (!project) {
+        navigate('/');
+        return null;
+    }
+
+    const handleComponentClick = (componentId) => {
+        // Navigate to component detail (manage rounds view)
+        navigate(`/project/${projectId}/component/${componentId}`);
+    };
+
+    const handleContinueCrocheting = () => {
+        // Find first component with rounds
+        const componentWithRounds = project.components.find(c => c.rounds && c.rounds.length > 0);
+        
+        if (componentWithRounds) {
+            // Go directly to crochet mode for this component
+            navigate(`/project/${projectId}/component/${componentWithRounds.id}/crochet`);
+        } else {
+            alert('Add some rounds first! Click a component to get started.');
+        }
+    };
+
+    // Get status badge class based on completion
+    const getStatusClass = (completedCount, quantity) => {
+        if (completedCount === 0) return styles['badge-not-started'];
+        if (completedCount < quantity) return styles['badge-in-progress'];
+        return styles['badge-complete'];
+    };
+
+    // Get color hex for display
+    const getColorHex = (colorName) => {
+        return YARN_COLORS.find(c => c.name === colorName)?.hex || '#cccccc';
+    };
+
+    return (
+        <div className={styles['project-detail']}>
+            <PageHeader 
+                title={project.name}
+                subtitle={`${project.components.length} ${project.components.length === 1 ? 'component' : 'components'}`}
+                onBack={() => navigate('/projects')}
+                actions={
+                    <div className={styles['menu-wrapper']}>
+                        <button
+                            className={styles['menu-button']}
+                            onClick={() => setShowMenu(!showMenu)}
+                            aria-label="Project menu"
+                        >
+                            ⋮
+                        </button>
+                        {showMenu && (
+                            <div className={styles['menu']}>
+                                <button
+                                    className={styles['menu-item']}
+                                    onClick={() => {
+                                        setShowMenu(false);
+                                        setShowEditProject(true);
+                                    }}
+                                >
+                                    ✏️ Edit Project
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                }
+            />
+
+            <div className={styles.content}>
+                {project.components.length === 0 ? (
+                    <EmptyState
+                        icon="🧶"
+                        title="No components yet"
+                        description="Add your first component to get started!"
+                        action={
+                            <Button 
+                                variant="primary" 
+                                onClick={() => setShowAddComponentModal(true)}
+                            >
+                                + Add Your First Component
+                            </Button>
+                        }
+                    />
+                ) : (
+                    <>
+                        <div className={styles['component-list']}>
+                            {project.components.map(component => (
+                                <Card
+                                    key={component.id}
+                                    variant="interactive"
+                                    onClick={() => handleComponentClick(component.id)}
+                                >
+                                    <div className={styles['component-header']}>
+                                        <div className={styles['component-name-row']}>
+                                            <span className={styles['component-name']}>{component.name}</span>
+                                            <span className={getStatusClass(component.completedCount, component.quantity)}>
+                                                {component.completedCount} of {component.quantity}
+                                            </span>
+                                        </div>
+                                        <div className={styles['component-meta']}>
+                                            <div 
+                                                className={styles['color-dot']}
+                                                style={{ backgroundColor: getColorHex(component.color) }}
+                                                title={component.color}
+                                            />
+                                            <span className={styles['hook-size']}>{component.hook}</span>
+                                            <span className={styles['rounds-count']}>
+                                                {component.rounds?.length || 0} {component.rounds?.length === 1 ? 'rnd' : 'rnds'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </Card>
+                            ))}
+                        </div>
+
+                        <div className={styles['button-group']}>
+                            <Button 
+                                variant="secondary"
+                                fullWidth
+                                onClick={() => setShowAddComponentModal(true)}
+                            >
+                                + Add Component
+                            </Button>
+                            <Button 
+                                variant="primary" 
+                                fullWidth
+                                onClick={handleContinueCrocheting}
+                            >
+                                🧶 Continue Crocheting
+                            </Button>
+                        </div>
+                    </>
+                )}
+            </div>
+
+            {/* Add Component Modal */}
+            <AddComponentModal
+                isOpen={showAddComponentModal}
+                onClose={() => setShowAddComponentModal(false)}
+                projectId={projectId}
+            />
+
+            {/* Edit Project Modal */}
+            <EditProjectModal
+                isOpen={showEditProject}
+                onClose={() => setShowEditProject(false)}
+                project={project}
+            />
+        </div>
+    );
+}
+
+export default ProjectDetail;
