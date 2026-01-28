@@ -79,7 +79,7 @@ function LandingPage() {
             {/* Header */}
             <div className={styles.header}>
                 <div className={styles.logo}>🧶</div>
-                <h1 className={styles.title}>CrochetGenius</h1>
+                <h1 className={styles.title}>CrochetNow</h1>
                 <p className={styles.subtitle}>Smart stitch counting for your crochet projects</p>
             </div>
 
