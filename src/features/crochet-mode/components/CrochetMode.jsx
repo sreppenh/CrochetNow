@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, RotateCcw } from 'lucide-react';
 import { useProjects } from '../../projects/context/ProjectsContext';
-import { ACTIONS } from '../../projects/hooks/projectsReducer';
 import { YARN_COLORS } from '../../../shared/data/yarnColors';
 import { CROCHET_ABBREVIATIONS } from '../../../shared/data/crochetAbbreviations';
 import styles from './CrochetMode.module.css';
@@ -10,7 +9,7 @@ import styles from './CrochetMode.module.css';
 function CrochetMode() {
     const { projectId, componentId } = useParams();
     const navigate = useNavigate();
-    const { state, dispatch } = useProjects();
+    const { state } = useProjects();
     
     const [currentRoundIndex, setCurrentRoundIndex] = useState(0);
     const [showAbbreviationHelp, setShowAbbreviationHelp] = useState(null);
@@ -20,61 +19,10 @@ function CrochetMode() {
     // Find project and component
     const project = state.projects.find(p => p.id === projectId);
     const component = project?.components.find(c => c.id === componentId);
-
-    // Redirect if not found
-    useEffect(() => {
-        if (!project || !component || !component.rounds || component.rounds.length === 0) {
-            navigate(`/project/${projectId}/component/${componentId}`);
-        }
-    }, [project, component, projectId, componentId, navigate]);
-
-    if (!project || !component || !component.rounds || component.rounds.length === 0) {
-        return null;
-    }
-
-    const rounds = component.rounds;
+    const rounds = component?.rounds || [];
     const currentRound = rounds[currentRoundIndex];
 
-    // Get color hex for display
-    const getColorHex = (colorName) => {
-        return YARN_COLORS.find(c => c.name === colorName)?.hex || '#cccccc';
-    };
-
-    // Check if color or hook changed
-    const hasColorChange = currentRoundIndex > 0 && 
-        currentRound && 
-        rounds[currentRoundIndex - 1] && 
-        currentRound.color !== rounds[currentRoundIndex - 1].color;
-
-    const hasHookChange = currentRoundIndex > 0 && 
-        currentRound &&
-        rounds[currentRoundIndex - 1] &&
-        currentRound.hook !== rounds[currentRoundIndex - 1].hook;
-
-    // Show color/hook on first card or when they change
-    const showColorAndHook = currentRoundIndex === 0 || hasColorChange || hasHookChange;
-
-    // Handle complete round
-    const handleCompleteRound = () => {
-        // Mark round as complete (we'll add this to the data structure)
-        // For now, just advance to next round
-        if (currentRoundIndex < rounds.length - 1) {
-            setCurrentRoundIndex(currentRoundIndex + 1);
-        } else {
-            // Last round completed - show celebration or go back
-            alert('Component complete! 🎉');
-            navigate(`/project/${projectId}/component/${componentId}`);
-        }
-    };
-
-    // Handle undo
-    const handleUndo = () => {
-        if (currentRoundIndex > 0) {
-            setCurrentRoundIndex(currentRoundIndex - 1);
-        }
-    };
-
-    // Navigation
+    // Navigation - defined before early return
     const canGoLeft = currentRoundIndex > 0;
     const canGoRight = currentRoundIndex < rounds.length - 1;
 
@@ -90,7 +38,51 @@ function CrochetMode() {
         }
     }, [canGoRight]);
 
-    // Touch handlers for swipe
+    // Keyboard navigation
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'ArrowLeft') navigateLeft();
+            if (e.key === 'ArrowRight') navigateRight();
+            if (e.key === 'Escape') navigate(`/project/${projectId}/component/${componentId}`);
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [navigateLeft, navigateRight, navigate, projectId, componentId]);
+
+    // Redirect if not found
+    useEffect(() => {
+        if (!project || !component || rounds.length === 0) {
+            navigate(`/project/${projectId}/component/${componentId}`);
+        }
+    }, [project, component, rounds.length, projectId, componentId, navigate]);
+
+    // Early return AFTER all hooks
+    if (!project || !component || rounds.length === 0) {
+        return null;
+    }
+
+    // Helper functions
+    const getColorHex = (colorName) => {
+        return YARN_COLORS.find(c => c.name === colorName)?.hex || '#cccccc';
+    };
+
+    const handleCompleteRound = () => {
+        if (currentRoundIndex < rounds.length - 1) {
+            setCurrentRoundIndex(currentRoundIndex + 1);
+        } else {
+            alert('Component complete! 🎉');
+            navigate(`/project/${projectId}/component/${componentId}`);
+        }
+    };
+
+    const handleUndo = () => {
+        if (currentRoundIndex > 0) {
+            setCurrentRoundIndex(currentRoundIndex - 1);
+        }
+    };
+
+    // Touch handlers
     const minSwipeDistance = 50;
 
     const onTouchStart = (e) => {
@@ -117,19 +109,20 @@ function CrochetMode() {
         }
     };
 
-    // Keyboard navigation
-    useEffect(() => {
-        const handleKeyDown = (e) => {
-            if (e.key === 'ArrowLeft') navigateLeft();
-            if (e.key === 'ArrowRight') navigateRight();
-            if (e.key === 'Escape') navigate(`/project/${projectId}/component/${componentId}`);
-        };
+    // Check if color or hook changed
+    const hasColorChange = currentRoundIndex > 0 && 
+        currentRound && 
+        rounds[currentRoundIndex - 1] && 
+        currentRound.color !== rounds[currentRoundIndex - 1].color;
 
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [navigateLeft, navigateRight, navigate, projectId, componentId]);
+    const hasHookChange = currentRoundIndex > 0 && 
+        currentRound &&
+        rounds[currentRoundIndex - 1] &&
+        currentRound.hook !== rounds[currentRoundIndex - 1].hook;
 
-    // Parse instruction and make abbreviations tappable
+    const showColorAndHook = currentRoundIndex === 0 || hasColorChange || hasHookChange;
+
+    // Render instruction with tappable abbreviations
     const renderInstruction = (instruction) => {
         const words = instruction.split(/(\s+)/);
         
@@ -289,7 +282,7 @@ function CrochetMode() {
     );
 }
 
-// Helper function to get detailed descriptions
+// Helper function for descriptions
 function getAbbreviationDescription(abbr) {
     const descriptions = {
         'sc': 'Insert hook into stitch, yarn over, pull through (2 loops on hook), yarn over, pull through both loops.',
