@@ -64,13 +64,9 @@
     transition: all 0.2s;
 }
 
-.activate-button:hover {
-    background: #FF5252;
-    transform: translateY(-1px);
-}
-
 .activate-button:active {
-    transform: translateY(0);
+    background: #FF5252;
+    transform: scale(0.98);
 }
 
 .dismiss-button {
@@ -83,7 +79,7 @@
     transition: color 0.2s;
 }
 
-.dismiss-button:hover {
+.dismiss-button:active {
     color: #6B7280;
 }
 
