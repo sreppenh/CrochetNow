@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useProjects } from '../../projects/context/ProjectsContext';
 import { ACTIONS } from '../../projects/hooks/projectsReducer';
 import { Modal, Button } from '../../../shared/components';
-import parseRoundInstruction from '../../../shared/utils/parseRoundInstruction';
 import styles from './RoundEntryModal.module.css'; // Reusing the same styles
 
 const COMMON_ABBREVIATIONS = [
