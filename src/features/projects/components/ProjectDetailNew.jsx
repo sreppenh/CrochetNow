@@ -103,33 +103,40 @@ function ProjectDetail() {
                 ) : (
                     <>
                         <div className={styles['component-list']}>
-                            {project.components.map(component => (
-                                <Card
-                                    key={component.id}
-                                    variant="interactive"
-                                    onClick={() => handleComponentClick(component.id)}
-                                >
-                                    <div className={styles['component-header']}>
-                                        <div className={styles['component-name-row']}>
-                                            <span className={styles['component-name']}>{component.name}</span>
-                                            <span className={getStatusClass(component.completedCount, component.quantity)}>
-                                                {component.completedCount} of {component.quantity}
-                                            </span>
+                            {project.components.map(component => {
+                                const isComplete = component.completedCount >= component.quantity;
+                                return (
+                                    <Card
+                                        key={component.id}
+                                        variant="interactive"
+                                        onClick={() => handleComponentClick(component.id)}
+                                        className={isComplete ? styles['component-complete'] : ''}
+                                    >
+                                        <div className={styles['component-header']}>
+                                            <div className={styles['component-name-row']}>
+                                                <span className={styles['component-name']}>
+                                                    {isComplete && '✓ '}
+                                                    {component.name}
+                                                </span>
+                                                <span className={getStatusClass(component.completedCount, component.quantity)}>
+                                                    {component.completedCount} of {component.quantity} {isComplete ? 'complete' : component.completedCount === 0 ? '' : 'done'}
+                                                </span>
+                                            </div>
+                                            <div className={styles['component-meta']}>
+                                                <div 
+                                                    className={styles['color-dot']}
+                                                    style={{ backgroundColor: getColorHex(component.color) }}
+                                                    title={component.color}
+                                                />
+                                                <span className={styles['hook-size']}>{component.hook}</span>
+                                                <span className={styles['rounds-count']}>
+                                                    {component.rounds?.length || 0} {component.rounds?.length === 1 ? 'rnd' : 'rnds'}
+                                                </span>
+                                            </div>
                                         </div>
-                                        <div className={styles['component-meta']}>
-                                            <div 
-                                                className={styles['color-dot']}
-                                                style={{ backgroundColor: getColorHex(component.color) }}
-                                                title={component.color}
-                                            />
-                                            <span className={styles['hook-size']}>{component.hook}</span>
-                                            <span className={styles['rounds-count']}>
-                                                {component.rounds?.length || 0} {component.rounds?.length === 1 ? 'rnd' : 'rnds'}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </Card>
-                            ))}
+                                    </Card>
+                                );
+                            })}
                         </div>
 
                         <div className={styles['button-group']}>

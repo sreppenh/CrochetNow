@@ -314,12 +314,13 @@
 .copy-button {
     background: transparent;
     border: none;
-    font-size: 1.125rem;
+    font-size: 1.25rem;
     cursor: pointer;
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
     transition: all 0.2s;
     opacity: 0.6;
+    line-height: 1;
 }
 
 .copy-button:hover {
@@ -340,7 +341,7 @@
 
 .stitch-badge {
     background: var(--mint-100);
-    color: var(--mint-600);
+    color: var(--mint-700);
     padding: 0.25rem 0.625rem;
     border-radius: 12px;
     font-size: 0.75rem;
@@ -348,13 +349,13 @@
 }
 
 .stitch-badge.increase {
-    background: #DBEAFE;
-    color: #1E40AF;
+    background: var(--mint-100);
+    color: var(--mint-700);
 }
 
 .stitch-badge.decrease {
-    background: #FEE2E2;
-    color: #DC2626;
+    background: var(--mint-100);
+    color: var(--mint-700);
 }
 
 .round-instruction {

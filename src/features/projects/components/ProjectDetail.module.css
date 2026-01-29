@@ -54,6 +54,16 @@
     text-overflow: ellipsis;
 }
 
+/* Completed Component Styling */
+.component-complete .component-name {
+    color: var(--mint-700);
+}
+
+.component-complete {
+    opacity: 0.85;
+    background: var(--mint-50);
+}
+
 /* Status Badges */
 .badge-not-started,
 .badge-in-progress,

@@ -43,7 +43,7 @@ function CrochetMode() {
         const handleKeyDown = (e) => {
             if (e.key === 'ArrowLeft') navigateLeft();
             if (e.key === 'ArrowRight') navigateRight();
-            if (e.key === 'Escape') navigate(`/project/${projectId}/component/${componentId}`);
+            if (e.key === 'Escape') navigate(`/project/${projectId}`);
         };
 
         window.addEventListener('keydown', handleKeyDown);
@@ -127,6 +127,11 @@ function CrochetMode() {
         const words = instruction.split(/(\s+)/);
         
         return words.map((word, index) => {
+            // Preserve whitespace
+            if (/^\s+$/.test(word)) {
+                return <span key={index}>{word}</span>;
+            }
+
             const cleanWord = word.trim().toLowerCase();
             const abbr = CROCHET_ABBREVIATIONS.find(a => 
                 a.abbr.toLowerCase() === cleanWord
@@ -156,13 +161,16 @@ function CrochetMode() {
             <div className={styles['header']}>
                 <button 
                     className={styles['back-button']}
-                    onClick={() => navigate(`/project/${projectId}/component/${componentId}`)}
+                    onClick={() => navigate(`/project/${projectId}`)}
                 >
                     ← Back
                 </button>
                 <div className={styles['header-title']}>
                     <div className={styles['component-name']}>{component.name}</div>
                     <div className={styles['progress']}>
+                        {component.quantity > 1 && (
+                            <span>Working on: {component.completedCount + 1} of {component.quantity} • </span>
+                        )}
                         Round {currentRoundIndex + 1} of {rounds.length}
                     </div>
                 </div>
@@ -229,25 +237,25 @@ function CrochetMode() {
                             {currentRound.stitchCount} {currentRound.stitchCount === 1 ? 'stitch' : 'stitches'}
                         </span>
                     </div>
-                </div>
-            </div>
 
-            {/* Footer Actions */}
-            <div className={styles['footer']}>
-                <button
-                    className={styles['undo-button']}
-                    onClick={handleUndo}
-                    disabled={currentRoundIndex === 0}
-                >
-                    <RotateCcw size={18} />
-                    <span>Undo</span>
-                </button>
-                <button
-                    className={styles['complete-button']}
-                    onClick={handleCompleteRound}
-                >
-                    Complete Round
-                </button>
+                    {/* Card Actions */}
+                    <div className={styles['card-actions']}>
+                        <button
+                            className={styles['previous-button']}
+                            onClick={handleUndo}
+                            disabled={currentRoundIndex === 0}
+                        >
+                            <ChevronLeft size={24} />
+                            Previous
+                        </button>
+                        <button
+                            className={styles['complete-button']}
+                            onClick={handleCompleteRound}
+                        >
+                            ✓ Mark Complete
+                        </button>
+                    </div>
+                </div>
             </div>
 
             {/* Abbreviation Help Modal */}

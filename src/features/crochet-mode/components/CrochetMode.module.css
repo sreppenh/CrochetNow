@@ -212,22 +212,21 @@
     color: var(--mint-700);
 }
 
-/* Footer Actions */
-.footer {
+/* Card Actions (buttons in card) */
+.card-actions {
     display: flex;
     gap: 1rem;
-    padding: 1.5rem;
-    background: white;
+    margin-top: 2rem;
+    padding-top: 2rem;
     border-top: 2px solid var(--warm-200);
-    flex-shrink: 0;
 }
 
-.undo-button,
+.previous-button,
 .complete-button {
     flex: 1;
-    padding: 1rem;
+    padding: 1.25rem;
     border-radius: 12px;
-    font-size: 1rem;
+    font-size: 1.125rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
@@ -236,35 +235,34 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
+    min-height: 60px;
 }
 
-.undo-button {
+.previous-button {
     background: white;
     border-color: var(--warm-300);
     color: var(--warm-700);
 }
 
-.undo-button:hover:not(:disabled) {
+.previous-button:active:not(:disabled) {
     background: var(--warm-50);
     border-color: var(--warm-400);
+    transform: scale(0.98);
 }
 
-.undo-button:disabled {
+.previous-button:disabled {
     opacity: 0.4;
     cursor: not-allowed;
 }
 
 .complete-button {
-    background: var(--coral-500);
-    border-color: var(--coral-600);
+    background: var(--mint-500);
+    border-color: var(--mint-600);
     color: white;
 }
 
-.complete-button:hover {
-    background: var(--coral-600);
-}
-
 .complete-button:active {
+    background: var(--mint-600);
     transform: scale(0.98);
 }
 
