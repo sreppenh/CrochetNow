@@ -2,16 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProjects } from '../../projects/context/ProjectsContext';
 import { ACTIONS } from '../../projects/hooks/projectsReducer';
-import CreateProjectModal from '../../projects/components/CreateProjectModal';
-import AddComponentModal from '../../components/components/AddComponentModal';
+import CreateProjectFlow from '../../projects/components/CreateProjectFlow';
 import styles from './LandingPage.module.css';
 
 function LandingPage() {
     const navigate = useNavigate();
     const { state, dispatch } = useProjects();
-    const [showCreateModal, setShowCreateModal] = useState(false);
-    const [showAddComponentModal, setShowAddComponentModal] = useState(false);
-    const [newProjectId, setNewProjectId] = useState(null);
+    const [showCreateFlow, setShowCreateFlow] = useState(false);
 
     // Find the most recently worked on project/component
     const getLastWorkedComponent = () => {
@@ -45,31 +42,25 @@ function LandingPage() {
     };
 
     const handleCreateProject = () => {
-        setShowCreateModal(true);
+        setShowCreateFlow(true);
     };
 
-    const handleCreateAndAddComponent = (projectData) => {
-        // Create the project with a predictable ID
+    const handleCreateComplete = (data) => {
+        // Create project with component
         const projectId = Date.now().toString();
         dispatch({
             type: ACTIONS.CREATE_PROJECT,
-            payload: { ...projectData, id: projectId }
+            payload: {
+                id: projectId,
+                name: data.project.name,
+                defaultHook: data.project.defaultHook,
+                defaultColor: data.project.defaultColor,
+                firstComponent: data.component
+            }
         });
-        
-        // Close create modal
-        setShowCreateModal(false);
-        
-        // Store project ID and open Add Component modal
-        setNewProjectId(projectId);
-        setShowAddComponentModal(true);
-    };
 
-    const handleAddComponentComplete = () => {
-        // Close modal and navigate to project detail
-        setShowAddComponentModal(false);
-        if (newProjectId) {
-            navigate(`/project/${newProjectId}`);
-        }
+        // Navigate to the new project's detail page
+        navigate(`/project/${projectId}`);
     };
 
     const hasProjects = state.projects.length > 0;
@@ -142,21 +133,12 @@ function LandingPage() {
                 <p className={styles.footerText}>Happy crocheting! 🧶</p>
             </div>
 
-            {/* Create Project Modal */}
-            <CreateProjectModal
-                isOpen={showCreateModal}
-                onClose={() => setShowCreateModal(false)}
-                onCreateAndAddComponent={handleCreateAndAddComponent}
+            {/* Create Project Flow Modal */}
+            <CreateProjectFlow
+                isOpen={showCreateFlow}
+                onClose={() => setShowCreateFlow(false)}
+                onComplete={handleCreateComplete}
             />
-
-            {/* Add Component Modal */}
-            {newProjectId && (
-                <AddComponentModal
-                    isOpen={showAddComponentModal}
-                    onClose={handleAddComponentComplete}
-                    projectId={newProjectId}
-                />
-            )}
         </div>
     );
 }
