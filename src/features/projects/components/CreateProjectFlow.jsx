@@ -64,13 +64,13 @@ function CreateProjectFlow({ isOpen, onClose, onComplete }) {
         
         setStep(2);
         
-        // Scroll to top of modal
+        // Scroll modal to top
         setTimeout(() => {
-            const modalContent = document.querySelector('[class*="modal"]');
-            if (modalContent) {
-                modalContent.scrollTop = 0;
+            const modal = document.querySelector('.modal');
+            if (modal) {
+                modal.scrollTop = 0;
             }
-        }, 0);
+        }, 50);
     };
 
     // Step 2: Validate and complete
@@ -313,7 +313,7 @@ function CreateProjectFlow({ isOpen, onClose, onComplete }) {
                                 ← Back
                             </Button>
                             <Button type="submit" variant="primary" fullWidth={false}>
-                                Create Project
+                                Add Component
                             </Button>
                         </div>
                     </form>
