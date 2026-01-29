@@ -135,9 +135,6 @@ function RoundEntryModal({ isOpen, onClose, projectId, componentId }) {
         >
             <form onSubmit={handleSubmit}>
                 <div className={styles['form-group']}>
-                    <label htmlFor="round-instruction" className={styles['form-label']}>
-                        Round Instruction
-                    </label>
                     <textarea
                         ref={textareaRef}
                         id="round-instruction"
@@ -150,14 +147,10 @@ function RoundEntryModal({ isOpen, onClose, projectId, componentId }) {
                             setError('');
                         }}
                     />
-                    <div className={styles['form-hint']}>
-                        Type your instruction or use the buttons below
-                    </div>
                 </div>
 
-                {/* Abbreviation Bar */}
+                {/* Abbreviation Bar - moved directly under textarea */}
                 <div className={styles['abbreviation-bar']}>
-                    <div className={styles['abbreviation-label']}>Quick Insert</div>
                     
                     {/* Common Abbreviations */}
                     <div className={styles['abbreviation-buttons']}>
