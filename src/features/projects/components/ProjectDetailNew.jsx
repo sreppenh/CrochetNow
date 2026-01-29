@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useProjects } from '../../projects/context/ProjectsContext';
-import { ACTIONS } from '../../projects/hooks/projectsReducer';
 import { PageHeader, Card, EmptyState, Button } from '../../../shared/components';
 import AddComponentModal from '../../components/components/AddComponentModal';
 import EditProjectModal from './EditProjectModal';
@@ -11,7 +10,7 @@ import styles from './ProjectDetail.module.css';
 function ProjectDetail() {
     const { projectId } = useParams();
     const navigate = useNavigate();
-    const { state, dispatch } = useProjects();
+    const { state } = useProjects();
     const [showAddComponentModal, setShowAddComponentModal] = useState(false);
     const [showEditProject, setShowEditProject] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
