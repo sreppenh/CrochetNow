@@ -5,7 +5,7 @@ import { Modal, Button } from '../../../shared/components';
 import { YARN_COLORS, HOOK_SIZES } from '../../../shared/data/yarnColors';
 import styles from './AddComponentModal.module.css';
 
-function AddComponentModal({ isOpen, onClose, projectId }) {
+function AddComponentModal({ isOpen, onClose, projectId, onSuccess }) {
     const { state, dispatch } = useProjects();
     
     // Find the project to get defaults
@@ -44,10 +44,12 @@ function AddComponentModal({ isOpen, onClose, projectId }) {
         }
 
         // Dispatch action to add component
+        const newComponentId = Date.now().toString();
         dispatch({
             type: ACTIONS.ADD_COMPONENT,
             payload: {
                 projectId,
+                componentId: newComponentId,
                 name: name.trim(),
                 quantity: parseInt(quantity),
                 color,
@@ -55,12 +57,18 @@ function AddComponentModal({ isOpen, onClose, projectId }) {
             }
         });
 
-        // Reset form and close
+        // Reset form
         setName('');
         setQuantity(1);
         setColor(defaultColor);
         setHook(defaultHook);
         setError('');
+        
+        // Call success callback with new component ID
+        if (onSuccess) {
+            onSuccess(newComponentId);
+        }
+        
         onClose();
     };
 

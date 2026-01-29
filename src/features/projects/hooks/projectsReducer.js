@@ -107,12 +107,12 @@ export function projectsReducer(state, action) {
         }
 
         case ACTIONS.ADD_COMPONENT: {
-            const { projectId, name, quantity, color, hook } = action.payload;
+            const { projectId, componentId, name, quantity, color, hook } = action.payload;
 
             const updatedProjects = state.projects.map(project => {
                 if (project.id === projectId) {
                     const newComponent = {
-                        id: Date.now().toString(),
+                        id: componentId || Date.now().toString(),
                         name,
                         quantity: quantity || 1,
                         color,

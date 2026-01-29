@@ -157,6 +157,10 @@ function ProjectDetail() {
                 isOpen={showAddComponentModal}
                 onClose={() => setShowAddComponentModal(false)}
                 projectId={projectId}
+                onSuccess={(componentId) => {
+                    // Navigate directly to the new component's detail page
+                    navigate(`/project/${projectId}/component/${componentId}`);
+                }}
             />
 
             {/* Edit Project Modal */}
