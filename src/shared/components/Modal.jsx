@@ -12,7 +12,7 @@ import styles from './Modal.module.css';
  * - children: ReactNode - modal content
  * - size: 'small' | 'medium' | 'large' - modal width (default: 'medium')
  */
-function Modal({ isOpen, onClose, title, children, size = 'medium' }) {
+function Modal({ isOpen, onClose, title, children, size = 'medium', showClose = true, noPadding = false }) {
     // Handle ESC key
     useEffect(() => {
         if (!isOpen) return;
@@ -52,17 +52,30 @@ function Modal({ isOpen, onClose, title, children, size = 'medium' }) {
     return (
         <div className={styles['modal-overlay']} onClick={handleBackdropClick}>
             <div className={`${styles.modal} ${styles[`modal-${size}`]}`}>
-                <div className={styles['modal-header']}>
-                    <h2 className={styles['modal-title']}>{title}</h2>
+                {title && (
+                    <div className={styles['modal-header']}>
+                        <h2 className={styles['modal-title']}>{title}</h2>
+                        {showClose && (
+                            <button 
+                                className={styles['modal-close']} 
+                                onClick={onClose}
+                                aria-label="Close modal"
+                            >
+                                ×
+                            </button>
+                        )}
+                    </div>
+                )}
+                {!title && showClose && (
                     <button 
-                        className={styles['modal-close']} 
+                        className={styles['modal-close-only']} 
                         onClick={onClose}
                         aria-label="Close modal"
                     >
                         ×
                     </button>
-                </div>
-                <div className={styles['modal-body']}>
+                )}
+                <div className={`${styles['modal-body']} ${noPadding ? styles['modal-body-no-padding'] : ''}`}>
                     {children}
                 </div>
             </div>

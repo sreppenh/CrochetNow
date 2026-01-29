@@ -119,25 +119,20 @@ function CreateProjectFlow({ isOpen, onClose, onComplete }) {
     };
 
     return (
-        <Modal isOpen={isOpen} onClose={handleClose}>
-            <div className={styles.modal}>
-                {/* Progress Indicator */}
-                <div className={styles.progress}>
-                    <div className={`${styles['progress-step']} ${step >= 1 ? styles.active : ''}`}>
-                        1
-                    </div>
-                    <div className={styles['progress-line']} />
-                    <div className={`${styles['progress-step']} ${step >= 2 ? styles.active : ''}`}>
-                        2
-                    </div>
-                </div>
+        <Modal 
+            isOpen={isOpen} 
+            onClose={handleClose} 
+            title={step === 1 ? "Create Project" : "Add First Component"}
+            size="medium"
+        >
+            {/* Subtitle */}
+            <p className={styles.subtitle}>
+                {step === 1 ? "Step 1 of 2: Project details" : "Step 2 of 2: Component details"}
+            </p>
 
-                {/* Step 1: Project Details */}
-                {step === 1 && (
-                    <form onSubmit={handleNextStep}>
-                        <h2 className={styles.title}>Create Project</h2>
-                        <p className={styles.subtitle}>Step 1 of 2: Project details</p>
-
+            {/* Step 1: Project Details */}
+            {step === 1 && (
+                <form onSubmit={handleNextStep}>
                         {error && <div className={styles.error}>{error}</div>}
 
                         {/* Project Name */}
@@ -217,9 +212,6 @@ function CreateProjectFlow({ isOpen, onClose, onComplete }) {
                 {/* Step 2: First Component */}
                 {step === 2 && (
                     <form onSubmit={handleComplete}>
-                        <h2 className={styles.title}>Add First Component</h2>
-                        <p className={styles.subtitle}>Step 2 of 2: Component details</p>
-
                         {error && <div className={styles.error}>{error}</div>}
 
                         {/* Component Name */}
@@ -326,7 +318,6 @@ function CreateProjectFlow({ isOpen, onClose, onComplete }) {
                         </div>
                     </form>
                 )}
-            </div>
         </Modal>
     );
 }
