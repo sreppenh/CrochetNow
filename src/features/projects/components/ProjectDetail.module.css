@@ -31,31 +31,148 @@
 }
 
 /* Component Card Content */
-.component-card-header {
+.component-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.component-name-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0.5rem;
+    gap: 1rem;
 }
 
 .component-name {
     font-size: 1.125rem;
     font-weight: 600;
     color: var(--warm-800);
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.component-quantity-badge {
-    background: var(--mint-500);
-    color: white;
+/* Status Badges */
+.badge-not-started,
+.badge-in-progress,
+.badge-complete {
     padding: 0.25rem 0.75rem;
     border-radius: 20px;
     font-size: 0.75rem;
     font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
+.badge-not-started {
+    background: var(--warm-200);
+    color: var(--warm-600);
+}
+
+.badge-in-progress {
+    background: var(--coral-100);
+    color: var(--coral-700);
+}
+
+.badge-complete {
+    background: var(--mint-100);
+    color: var(--mint-700);
+}
+
+/* Component Meta */
 .component-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
     font-size: 0.875rem;
     color: var(--warm-600);
+}
+
+.color-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid var(--warm-300);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+
+.hook-size {
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.hook-size::after {
+    content: '•';
+    margin-left: 0.75rem;
+    color: var(--warm-400);
+}
+
+.rounds-count {
+    flex-shrink: 0;
+}
+
+/* Button Group */
+.button-group {
+    display: flex;
+    gap: 0.75rem;
+}
+
+/* Menu Styles */
+.menu-wrapper {
+    position: relative;
+}
+
+.menu-button {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.menu-button:active {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.5rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    min-width: 180px;
+    overflow: hidden;
+    z-index: 100;
+}
+
+.menu-item {
+    display: block;
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: none;
+    background: white;
+    text-align: left;
+    font-size: 0.9375rem;
+    color: var(--warm-700);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.menu-item:active {
+    background: var(--warm-50);
 }
 
 /* Help Note */
@@ -88,8 +205,18 @@
         font-size: 1rem;
     }
 
-    .component-quantity-badge {
+    .badge-not-started,
+    .badge-in-progress,
+    .badge-complete {
         font-size: 0.6875rem;
         padding: 0.2rem 0.625rem;
+    }
+
+    .button-group {
+        flex-direction: column;
+    }
+
+    .component-meta {
+        font-size: 0.8125rem;
     }
 }
