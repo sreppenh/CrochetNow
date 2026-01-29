@@ -187,10 +187,17 @@
 .exit-buttons {
     display: flex;
     gap: 0.75rem;
+    flex-wrap: nowrap;
 }
 
-.exit-buttons button {
+.exit-buttons button:first-child {
+    flex: 0 0 auto;
+    min-width: 80px;
+}
+
+.exit-buttons button:last-child {
     flex: 1;
+    white-space: nowrap;
 }
 
 /* Menu (Three-Dot) */
@@ -302,6 +309,27 @@
 
 .round-menu-button:active {
     transform: scale(0.95);
+}
+
+.copy-button {
+    background: transparent;
+    border: none;
+    font-size: 1.125rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: all 0.2s;
+    opacity: 0.6;
+}
+
+.copy-button:hover {
+    background: var(--mint-100);
+    opacity: 1;
+}
+
+.copy-button:active {
+    transform: scale(0.95);
+    background: var(--mint-200);
 }
 
 .round-number {

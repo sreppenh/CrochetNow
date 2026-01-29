@@ -80,6 +80,21 @@ function ComponentDetail() {
         }
     };
 
+    const handleCopyRound = (round) => {
+        // Copy the round and append to end with auto-incremented round number
+        const newRoundNumber = component.rounds.length + 1;
+        dispatch({
+            type: ACTIONS.ADD_ROUND,
+            payload: {
+                projectId,
+                componentId,
+                instruction: round.instruction,
+                stitchCount: round.stitchCount,
+                roundNumber: newRoundNumber
+            }
+        });
+    };
+
     // Get color hex for display
     const getColorHex = (colorName) => {
         return YARN_COLORS.find(c => c.name === colorName)?.hex || '#cccccc';
@@ -193,6 +208,17 @@ function ComponentDetail() {
                                                         }
                                                     </span>
                                                     <button
+                                                        className={styles['copy-button']}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleCopyRound(round);
+                                                        }}
+                                                        aria-label="Copy round"
+                                                        title="Copy round"
+                                                    >
+                                                        ⎘
+                                                    </button>
+                                                    <button
                                                         className={styles['round-menu-button']}
                                                         onClick={(e) => {
                                                             e.stopPropagation();
@@ -227,12 +253,14 @@ function ComponentDetail() {
                                 <Button 
                                     variant="tertiary"
                                     onClick={handleSave}
+                                    fullWidth={false}
                                 >
                                     Save
                                 </Button>
                                 <Button 
                                     variant="primary"
                                     onClick={handleNextComponent}
+                                    fullWidth={false}
                                 >
                                     Next Component →
                                 </Button>
