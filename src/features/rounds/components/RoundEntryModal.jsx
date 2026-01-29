@@ -37,6 +37,7 @@ const PUNCTUATION = [
 function RoundEntryModal({ isOpen, onClose, projectId, componentId }) {
     const { state, dispatch } = useProjects();
     const [instruction, setInstruction] = useState('');
+    const [stitchCount, setStitchCount] = useState('');
     const [error, setError] = useState('');
     const textareaRef = useRef(null);
 
@@ -47,13 +48,6 @@ function RoundEntryModal({ isOpen, onClose, projectId, componentId }) {
         ? component.rounds[component.rounds.length - 1].stitchCount 
         : 0;
     const nextRoundNumber = component ? component.rounds.length + 1 : 1;
-
-    // Calculate preview stitch count
-    const calculatedCount = instruction.trim() 
-        ? parseRoundInstruction(instruction, previousCount)
-        : null;
-
-    const change = calculatedCount !== null ? calculatedCount - previousCount : null;
 
     // Insert text at cursor position
     const insertText = (text) => {
@@ -91,8 +85,9 @@ function RoundEntryModal({ isOpen, onClose, projectId, componentId }) {
             return;
         }
 
-        if (calculatedCount === null) {
-            setError('Could not calculate stitch count from instruction');
+        const count = parseInt(stitchCount);
+        if (!stitchCount || isNaN(count) || count < 0) {
+            setError('Please enter a valid stitch count');
             return;
         }
 
@@ -103,18 +98,20 @@ function RoundEntryModal({ isOpen, onClose, projectId, componentId }) {
                 projectId,
                 componentId,
                 instruction: instruction.trim(),
-                stitchCount: calculatedCount
+                stitchCount: count
             }
         });
 
         // Reset and close
         setInstruction('');
+        setStitchCount('');
         setError('');
         onClose();
     };
 
     const handleClose = () => {
         setInstruction('');
+        setStitchCount('');
         setError('');
         onClose();
     };
@@ -195,22 +192,44 @@ function RoundEntryModal({ isOpen, onClose, projectId, componentId }) {
                     </div>
                 </div>
 
-                {/* Preview */}
-                {calculatedCount !== null && (
-                    <div className={styles['preview-box']}>
-                        <div className={styles['preview-label']}>Calculated Stitch Count</div>
-                        <div className={styles['preview-content']}>
-                            This round will have <span className={styles['preview-stitch']}>{calculatedCount}</span> stitches
-                            {change !== null && previousCount > 0 && (
-                                <span className={styles['stitch-change']} style={{
-                                    color: change > 0 ? '#1E40AF' : change < 0 ? '#DC2626' : 'var(--warm-600)'
-                                }}>
-                                    {change > 0 ? ` (+${change})` : change < 0 ? ` (${change})` : ' (no change)'}
-                                </span>
-                            )}
-                        </div>
+                {/* Stitch Count Input with +/- buttons */}
+                <div className={styles['form-group']}>
+                    <label htmlFor="stitch-count" className={styles['form-label']}>
+                        Stitch Count <span className={styles.required}>*</span>
+                    </label>
+                    <div className={styles['increment-input']}>
+                        <button
+                            type="button"
+                            className={styles['increment-btn-minus']}
+                            onClick={() => setStitchCount(Math.max(0, parseInt(stitchCount || 0) - 1).toString())}
+                        >
+                            −
+                        </button>
+                        <input
+                            id="stitch-count"
+                            type="number"
+                            className={styles['increment-value']}
+                            value={stitchCount}
+                            onChange={(e) => {
+                                setStitchCount(e.target.value);
+                                setError('');
+                            }}
+                            min="0"
+                        />
+                        <button
+                            type="button"
+                            className={styles['increment-btn-plus']}
+                            onClick={() => setStitchCount((parseInt(stitchCount || 0) + 1).toString())}
+                        >
+                            +
+                        </button>
                     </div>
-                )}
+                    {previousCount > 0 && (
+                        <div className={styles['form-hint']}>
+                            Previous round: {previousCount} stitches
+                        </div>
+                    )}
+                </div>
 
                 {error && (
                     <div className={styles['error-message']}>

@@ -37,13 +37,15 @@ const PUNCTUATION = [
 function EditRoundModal({ isOpen, onClose, projectId, componentId, round }) {
     const { dispatch } = useProjects();
     const [instruction, setInstruction] = useState(round?.instruction || '');
+    const [stitchCount, setStitchCount] = useState(round?.stitchCount?.toString() || '');
     const [error, setError] = useState('');
     const textareaRef = useRef(null);
 
-    // Update instruction when round changes
+    // Update instruction and stitch count when round changes
     useEffect(() => {
         if (round) {
             setInstruction(round.instruction);
+            setStitchCount(round.stitchCount?.toString() || '');
         }
     }, [round]);
 
@@ -87,11 +89,9 @@ function EditRoundModal({ isOpen, onClose, projectId, componentId, round }) {
             return;
         }
 
-        // Parse instruction to get stitch count
-        const parsed = parseRoundInstruction(instruction);
-
-        if (parsed.stitchCount === 0 && !instruction.toLowerCase().includes('join') && !instruction.toLowerCase().includes('fasten')) {
-            setError('Could not calculate stitch count. Please check your instruction.');
+        const count = parseInt(stitchCount);
+        if (!stitchCount || isNaN(count) || count < 0) {
+            setError('Please enter a valid stitch count');
             return;
         }
 
@@ -103,7 +103,7 @@ function EditRoundModal({ isOpen, onClose, projectId, componentId, round }) {
                 componentId,
                 roundId: round.id,
                 instruction: instruction.trim(),
-                stitchCount: parsed.stitchCount
+                stitchCount: count
             }
         });
 
@@ -113,13 +113,10 @@ function EditRoundModal({ isOpen, onClose, projectId, componentId, round }) {
 
     const handleClose = () => {
         setInstruction(round?.instruction || '');
+        setStitchCount(round?.stitchCount?.toString() || '');
         setError('');
         onClose();
     };
-
-    // Preview stitch count
-    const parsed = parseRoundInstruction(instruction);
-    const previewCount = parsed.stitchCount;
 
     return (
         <Modal
@@ -131,29 +128,22 @@ function EditRoundModal({ isOpen, onClose, projectId, componentId, round }) {
             <form onSubmit={handleSubmit}>
                 {/* Instruction Input */}
                 <div className={styles['form-group']}>
-                    <label htmlFor="instruction" className={styles['form-label']}>
-                        Instruction <span className={styles.required}>*</span>
-                    </label>
                     <textarea
                         ref={textareaRef}
                         id="instruction"
-                        className={styles['form-textarea']}
+                        className={styles['form-input']}
                         rows={3}
-                        placeholder="e.g., (sc, inc) x 6"
+                        placeholder="e.g., 6 sc in MR or (sc, inc) x 6"
                         value={instruction}
                         onChange={(e) => {
                             setInstruction(e.target.value);
                             setError('');
                         }}
                     />
-                    <div className={styles['form-hint']}>
-                        Type your instruction or use the buttons below
-                    </div>
                 </div>
 
-                {/* Abbreviation Bar */}
+                {/* Abbreviation Bar - moved directly under textarea */}
                 <div className={styles['abbreviation-bar']}>
-                    <div className={styles['abbreviation-label']}>Quick Insert</div>
                     
                     {/* Common Abbreviations */}
                     <div className={styles['abbreviation-buttons']}>
@@ -198,18 +188,39 @@ function EditRoundModal({ isOpen, onClose, projectId, componentId, round }) {
                     </div>
                 </div>
 
-                {/* Preview */}
-                {instruction.trim() && (
-                    <div className={styles['preview-section']}>
-                        <div className={styles['preview-label']}>Preview:</div>
-                        <div className={styles['preview-content']}>
-                            <span className={styles['preview-instruction']}>{instruction}</span>
-                            <span className={styles['preview-count']}>
-                                {previewCount} {previewCount === 1 ? 'stitch' : 'stitches'}
-                            </span>
-                        </div>
+                {/* Stitch Count Input with +/- buttons */}
+                <div className={styles['form-group']}>
+                    <label htmlFor="stitch-count" className={styles['form-label']}>
+                        Stitch Count <span className={styles.required}>*</span>
+                    </label>
+                    <div className={styles['increment-input']}>
+                        <button
+                            type="button"
+                            className={styles['increment-btn-minus']}
+                            onClick={() => setStitchCount(Math.max(0, parseInt(stitchCount || 0) - 1).toString())}
+                        >
+                            −
+                        </button>
+                        <input
+                            id="stitch-count"
+                            type="number"
+                            className={styles['increment-value']}
+                            value={stitchCount}
+                            onChange={(e) => {
+                                setStitchCount(e.target.value);
+                                setError('');
+                            }}
+                            min="0"
+                        />
+                        <button
+                            type="button"
+                            className={styles['increment-btn-plus']}
+                            onClick={() => setStitchCount((parseInt(stitchCount || 0) + 1).toString())}
+                        >
+                            +
+                        </button>
                     </div>
-                )}
+                </div>
 
                 {error && (
                     <div className={styles['error-message']}>
