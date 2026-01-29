@@ -1,0 +1,284 @@
+/* Modal Container */
+.modal {
+    padding: 2rem;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* Progress Indicator */
+.progress {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+    gap: 1rem;
+}
+
+.progress-step {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--warm-200);
+    color: var(--warm-500);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.125rem;
+    transition: all 0.3s;
+}
+
+.progress-step.active {
+    background: var(--coral-500);
+    color: white;
+    transform: scale(1.1);
+}
+
+.progress-line {
+    width: 60px;
+    height: 3px;
+    background: var(--warm-200);
+}
+
+/* Title and Subtitle */
+.title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--warm-800);
+    margin: 0 0 0.5rem 0;
+    text-align: center;
+}
+
+.subtitle {
+    font-size: 0.9375rem;
+    color: var(--warm-600);
+    margin: 0 0 1.5rem 0;
+    text-align: center;
+}
+
+/* Form Groups */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    color: var(--warm-700);
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.required {
+    color: var(--coral-500);
+}
+
+.optional {
+    color: var(--warm-500);
+    font-weight: 400;
+}
+
+.form-input,
+.form-select {
+    width: 100%;
+    padding: 0.875rem;
+    border: 2px solid var(--warm-200);
+    border-radius: 10px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s;
+    background: white;
+}
+
+.form-input:focus,
+.form-select:focus {
+    outline: none;
+    border-color: var(--coral-500);
+}
+
+.form-select {
+    cursor: pointer;
+}
+
+/* Quantity Input */
+.quantity-input {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    max-width: 200px;
+}
+
+.quantity-button {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    border: 2px solid var(--coral-500);
+    background: white;
+    color: var(--coral-600);
+    font-size: 1.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.quantity-button:active {
+    background: var(--coral-50);
+    transform: scale(0.95);
+}
+
+.quantity-value {
+    flex: 1;
+    text-align: center;
+    font-size: 1.25rem;
+    font-weight: 600;
+    padding: 0.75rem;
+    border: 2px solid var(--warm-200);
+    border-radius: 10px;
+    color: var(--warm-800);
+    background: white;
+}
+
+.quantity-value:focus {
+    outline: none;
+    border-color: var(--coral-500);
+}
+
+/* Color Grid */
+.color-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: var(--warm-50);
+    border-radius: 10px;
+    border: 2px solid var(--warm-200);
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.color-button {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 0;
+    background: none;
+    display: block;
+}
+
+.color-button:active {
+    transform: scale(1.05);
+}
+
+.color-button-selected {
+    border-color: var(--coral-500);
+    transform: scale(1.1);
+}
+
+.color-circle {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: none;
+}
+
+/* Selected Color Display */
+.selected-color {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    background: white;
+    border-radius: 8px;
+    border: 2px solid var(--coral-300);
+}
+
+.selected-swatch {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--warm-300);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.selected-color span {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--coral-600);
+}
+
+/* Error Message */
+.error {
+    background: #FEE2E2;
+    border: 2px solid #EF4444;
+    color: #991B1B;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+}
+
+/* Actions */
+.actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.actions button {
+    flex: 1;
+}
+
+/* Mobile Optimization */
+@media (max-width: 640px) {
+    .modal {
+        padding: 1.5rem;
+    }
+
+    .title {
+        font-size: 1.25rem;
+    }
+
+    .subtitle {
+        font-size: 0.875rem;
+    }
+
+    .progress-step {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+    }
+
+    .progress-line {
+        width: 40px;
+    }
+
+    .color-grid {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 0.5rem;
+        padding: 0.75rem;
+        justify-items: center;
+    }
+
+    .color-button {
+        width: 32px;
+        height: 32px;
+    }
+
+    .quantity-button {
+        width: 44px;
+        height: 44px;
+    }
+
+    .selected-swatch {
+        width: 28px;
+        height: 28px;
+    }
+}

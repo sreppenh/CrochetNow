@@ -45,6 +45,22 @@ export function projectsReducer(state, action) {
                 components: []
             };
 
+            // If firstComponent provided, add it
+            if (action.payload.firstComponent) {
+                const firstComp = action.payload.firstComponent;
+                newProject.components.push({
+                    id: Date.now().toString(),
+                    name: firstComp.name,
+                    quantity: firstComp.quantity,
+                    completedCount: 0,
+                    color: firstComp.color,
+                    hook: firstComp.hook,
+                    rounds: [],
+                    created: new Date().toISOString(),
+                    updated: new Date().toISOString()
+                });
+            }
+
             logger.success('Project created', { name: newProject.name });
 
             return {

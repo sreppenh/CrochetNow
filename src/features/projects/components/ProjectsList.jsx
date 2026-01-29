@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useProjects } from '../../projects/context/ProjectsContext';
 import { ACTIONS } from '../../projects/hooks/projectsReducer';
 import { PageHeader, Card, EmptyState, Button, ConfirmationModal } from '../../../shared/components';
+import CreateProjectFlow from './CreateProjectFlow';
 import styles from './ProjectsList.module.css';
 
 function ProjectsList() {
@@ -10,6 +11,7 @@ function ProjectsList() {
     const { state, dispatch } = useProjects();
     const [menuOpenForProject, setMenuOpenForProject] = useState(null);
     const [projectToDelete, setProjectToDelete] = useState(null);
+    const [showCreateFlow, setShowCreateFlow] = useState(false);
 
     const handleProjectClick = (projectId) => {
         navigate(`/project/${projectId}`);
@@ -30,14 +32,27 @@ function ProjectsList() {
         }
     };
 
-    const handleCreateProject = () => {
-        const name = prompt('Project name:');
-        if (name && name.trim()) {
-            dispatch({
-                type: ACTIONS.CREATE_PROJECT,
-                payload: { name: name.trim() }
-            });
-        }
+    const handleCreateComplete = (data) => {
+        // Create project with component
+        dispatch({
+            type: ACTIONS.CREATE_PROJECT,
+            payload: {
+                name: data.project.name,
+                defaultHook: data.project.defaultHook,
+                defaultColor: data.project.defaultColor,
+                firstComponent: data.component
+            }
+        });
+
+        // Navigate to the new project
+        // The project will be created with the component already added
+        // We need to get the ID after it's created, so we'll navigate after a brief delay
+        setTimeout(() => {
+            const newProject = state.projects[state.projects.length - 1];
+            if (newProject) {
+                navigate(`/project/${newProject.id}`);
+            }
+        }, 100);
     };
 
     const toggleMenu = (projectId, e) => {
@@ -72,7 +87,7 @@ function ProjectsList() {
                         title="No projects yet"
                         description="Create your first crochet project to get started!"
                         action={
-                            <Button variant="primary" onClick={handleCreateProject}>
+                            <Button variant="primary" onClick={() => setShowCreateFlow(true)}>
                                 + Create Your First Project
                             </Button>
                         }
@@ -139,13 +154,20 @@ function ProjectsList() {
                         <Button 
                             variant="primary" 
                             fullWidth
-                            onClick={handleCreateProject}
+                            onClick={() => setShowCreateFlow(true)}
                         >
                             + Create New Project
                         </Button>
                     </>
                 )}
             </div>
+
+            {/* Create Project Flow Modal */}
+            <CreateProjectFlow
+                isOpen={showCreateFlow}
+                onClose={() => setShowCreateFlow(false)}
+                onComplete={handleCreateComplete}
+            />
 
             {/* Delete Confirmation Modal */}
             {projectToDelete && (
