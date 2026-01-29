@@ -33,26 +33,26 @@ function ProjectsList() {
     };
 
     const handleCreateComplete = (data) => {
-        // Create project with component
+        // Create project with component, using predictable IDs
+        const projectId = Date.now().toString();
+        const componentId = (Date.now() + 1).toString();
+        
         dispatch({
             type: ACTIONS.CREATE_PROJECT,
             payload: {
+                id: projectId,
                 name: data.project.name,
                 defaultHook: data.project.defaultHook,
                 defaultColor: data.project.defaultColor,
-                firstComponent: data.component
+                firstComponent: {
+                    id: componentId,
+                    ...data.component
+                }
             }
         });
 
-        // Navigate to the new project
-        // The project will be created with the component already added
-        // We need to get the ID after it's created, so we'll navigate after a brief delay
-        setTimeout(() => {
-            const newProject = state.projects[state.projects.length - 1];
-            if (newProject) {
-                navigate(`/project/${newProject.id}`);
-            }
-        }, 100);
+        // Navigate directly to the component detail page to add rounds
+        navigate(`/project/${projectId}/component/${componentId}`);
     };
 
     const toggleMenu = (projectId, e) => {

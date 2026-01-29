@@ -49,7 +49,7 @@ export function projectsReducer(state, action) {
             if (action.payload.firstComponent) {
                 const firstComp = action.payload.firstComponent;
                 newProject.components.push({
-                    id: Date.now().toString(),
+                    id: firstComp.id || Date.now().toString(),
                     name: firstComp.name,
                     quantity: firstComp.quantity,
                     completedCount: 0,

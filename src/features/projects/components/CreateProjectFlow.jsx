@@ -63,6 +63,14 @@ function CreateProjectFlow({ isOpen, onClose, onComplete }) {
         }
         
         setStep(2);
+        
+        // Scroll to top of modal
+        setTimeout(() => {
+            const modalContent = document.querySelector('[class*="modal"]');
+            if (modalContent) {
+                modalContent.scrollTop = 0;
+            }
+        }, 0);
     };
 
     // Step 2: Validate and complete
@@ -196,11 +204,11 @@ function CreateProjectFlow({ isOpen, onClose, onComplete }) {
                         </div>
 
                         <div className={styles.actions}>
-                            <Button type="button" variant="tertiary" onClick={handleClose}>
+                            <Button type="button" variant="tertiary" onClick={handleClose} fullWidth={false}>
                                 Cancel
                             </Button>
-                            <Button type="submit" variant="primary">
-                                Next: Add Component →
+                            <Button type="submit" variant="primary" fullWidth={false}>
+                                Add Component
                             </Button>
                         </div>
                     </form>
@@ -309,10 +317,10 @@ function CreateProjectFlow({ isOpen, onClose, onComplete }) {
                         </div>
 
                         <div className={styles.actions}>
-                            <Button type="button" variant="tertiary" onClick={handleBack}>
+                            <Button type="button" variant="tertiary" onClick={handleBack} fullWidth={false}>
                                 ← Back
                             </Button>
-                            <Button type="submit" variant="primary">
+                            <Button type="submit" variant="primary" fullWidth={false}>
                                 Create Project
                             </Button>
                         </div>
