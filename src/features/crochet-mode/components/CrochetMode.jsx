@@ -10,7 +10,7 @@ function CrochetMode() {
     const { projectId, componentId } = useParams();
     const navigate = useNavigate();
     const { state } = useProjects();
-    
+
     const [currentRoundIndex, setCurrentRoundIndex] = useState(0);
     const [showAbbreviationHelp, setShowAbbreviationHelp] = useState(null);
     const [touchStart, setTouchStart] = useState(null);
@@ -96,7 +96,7 @@ function CrochetMode() {
 
     const onTouchEnd = () => {
         if (!touchStart || !touchEnd) return;
-        
+
         const distance = touchStart - touchEnd;
         const isLeftSwipe = distance > minSwipeDistance;
         const isRightSwipe = distance < -minSwipeDistance;
@@ -110,12 +110,12 @@ function CrochetMode() {
     };
 
     // Check if color or hook changed
-    const hasColorChange = currentRoundIndex > 0 && 
-        currentRound && 
-        rounds[currentRoundIndex - 1] && 
+    const hasColorChange = currentRoundIndex > 0 &&
+        currentRound &&
+        rounds[currentRoundIndex - 1] &&
         currentRound.color !== rounds[currentRoundIndex - 1].color;
 
-    const hasHookChange = currentRoundIndex > 0 && 
+    const hasHookChange = currentRoundIndex > 0 &&
         currentRound &&
         rounds[currentRoundIndex - 1] &&
         currentRound.hook !== rounds[currentRoundIndex - 1].hook;
@@ -125,7 +125,7 @@ function CrochetMode() {
     // Render instruction with tappable abbreviations
     const renderInstruction = (instruction) => {
         const words = instruction.split(/(\s+)/);
-        
+
         return words.map((word, index) => {
             // Preserve whitespace
             if (/^\s+$/.test(word)) {
@@ -133,7 +133,7 @@ function CrochetMode() {
             }
 
             const cleanWord = word.trim().toLowerCase();
-            const abbr = CROCHET_ABBREVIATIONS.find(a => 
+            const abbr = CROCHET_ABBREVIATIONS.find(a =>
                 a.abbr.toLowerCase() === cleanWord
             );
 
@@ -159,7 +159,7 @@ function CrochetMode() {
         <div className={styles['crochet-mode']}>
             {/* Header */}
             <div className={styles['header']}>
-                <button 
+                <button
                     className={styles['back-button']}
                     onClick={() => navigate(`/project/${projectId}`)}
                 >
@@ -197,7 +197,7 @@ function CrochetMode() {
             )}
 
             {/* Main Card */}
-            <div 
+            <div
                 className={styles['card-container']}
                 onTouchStart={onTouchStart}
                 onTouchMove={onTouchMove}
@@ -213,7 +213,7 @@ function CrochetMode() {
                     {showColorAndHook && (
                         <div className={styles['card-meta']}>
                             <div className={styles['meta-item']}>
-                                <div 
+                                <div
                                     className={styles['color-dot']}
                                     style={{ backgroundColor: getColorHex(component.color) }}
                                 />
@@ -269,11 +269,11 @@ function CrochetMode() {
 
             {/* Abbreviation Help Modal */}
             {showAbbreviationHelp && (
-                <div 
+                <div
                     className={styles['help-modal-backdrop']}
                     onClick={() => setShowAbbreviationHelp(null)}
                 >
-                    <div 
+                    <div
                         className={styles['help-modal']}
                         onClick={(e) => e.stopPropagation()}
                     >
