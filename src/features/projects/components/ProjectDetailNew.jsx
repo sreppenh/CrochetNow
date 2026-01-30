@@ -29,18 +29,6 @@ function ProjectDetail() {
         navigate(`/project/${projectId}/component/${componentId}/crochet`);
     };
 
-    const handleContinueCrocheting = () => {
-        // Find first component with rounds
-        const componentWithRounds = project.components.find(c => c.rounds && c.rounds.length > 0);
-        
-        if (componentWithRounds) {
-            // Go directly to crochet mode for this component
-            navigate(`/project/${projectId}/component/${componentWithRounds.id}/crochet`);
-        } else {
-            alert('Add some rounds first! Click a component to get started.');
-        }
-    };
-
     // Get status badge class based on completion
     const getStatusClass = (completedCount, quantity) => {
         if (completedCount === 0) return styles['badge-not-started'];

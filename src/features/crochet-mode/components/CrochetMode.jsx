@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, RotateCcw } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useProjects } from '../../projects/context/ProjectsContext';
 import { YARN_COLORS } from '../../../shared/data/yarnColors';
 import { CROCHET_ABBREVIATIONS } from '../../../shared/data/crochetAbbreviations';
