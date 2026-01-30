@@ -185,9 +185,6 @@ function ComponentDetail() {
                     <>
                         <div className={styles['round-list']}>
                             {component.rounds.map((round, index) => {
-                                const previousCount = index > 0 ? component.rounds[index - 1].stitchCount : 0;
-                                const change = round.stitchCount - previousCount;
-
                                 return (
                                     <div key={round.id} className={styles['round-card-wrapper']}>
                                         <Card
@@ -197,15 +194,8 @@ function ComponentDetail() {
                                             <div className={styles['round-header']}>
                                                 <span className={styles['round-number']}>Rnd {round.roundNumber}</span>
                                                 <div className={styles['round-actions']}>
-                                                    <span className={`${styles['stitch-badge']} ${change > 0 ? styles.increase : change < 0 ? styles.decrease : ''}`}>
-                                                        {index === 0 
-                                                            ? `${round.stitchCount} sts` 
-                                                            : change > 0 
-                                                                ? `+${change}` 
-                                                                : change < 0 
-                                                                    ? `${change}` 
-                                                                    : `${round.stitchCount} sts`
-                                                        }
+                                                    <span className={styles['stitch-badge']}>
+                                                        {round.stitchCount} {round.stitchCount === 1 ? 'st' : 'sts'}
                                                     </span>
                                                     <button
                                                         className={styles['copy-button']}
