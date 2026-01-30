@@ -106,6 +106,16 @@ function ProjectDetail() {
                                                     {isComplete && '✓ '}
                                                     {component.name}
                                                 </span>
+                                                <button
+                                                    className={styles['edit-button']}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        navigate(`/project/${projectId}/component/${component.id}`);
+                                                    }}
+                                                    aria-label="Edit rounds"
+                                                >
+                                                    ✏️
+                                                </button>
                                                 <span className={getStatusClass(component.completedCount, component.quantity)}>
                                                     {component.completedCount} of {component.quantity} {isComplete ? 'complete' : component.completedCount === 0 ? '' : 'done'}
                                                 </span>

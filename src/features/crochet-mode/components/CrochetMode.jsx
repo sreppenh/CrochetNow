@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, RotateCcw } from 'lucide-react';
 import { useProjects } from '../../projects/context/ProjectsContext';
 import { YARN_COLORS } from '../../../shared/data/yarnColors';
 import { CROCHET_ABBREVIATIONS } from '../../../shared/data/crochetAbbreviations';
@@ -238,22 +238,30 @@ function CrochetMode() {
                         </span>
                     </div>
 
-                    {/* Card Actions - IntelliKnit style */}
+                    {/* Card Actions - EXACT IntelliKnit style */}
                     <div className={styles['card-actions']}>
+                        {/* Back Button - Smaller */}
                         <button
                             className={styles['undo-button']}
                             onClick={handleUndo}
                             disabled={currentRoundIndex === 0}
                             aria-label="Previous round"
                         >
-                            ↺
+                            <RotateCcw size={20} />
                         </button>
+
+                        {/* Current number display */}
+                        <div className={styles['current-number']}>
+                            {currentRoundIndex + 1}
+                        </div>
+
+                        {/* Checkmark Button - LARGE */}
                         <button
                             className={styles['complete-button']}
                             onClick={handleCompleteRound}
                             aria-label="Mark complete"
                         >
-                            ✓
+                            <ChevronRight size={28} />
                         </button>
                     </div>
                 </div>

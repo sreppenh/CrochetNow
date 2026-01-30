@@ -169,9 +169,8 @@
     padding: 1.5rem;
     background: var(--warm-50);
     border-radius: 16px;
-    white-space: normal;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
+    flex-wrap: wrap;
+    word-break: break-word;
 }
 
 /* Tappable Abbreviations */
@@ -215,66 +214,77 @@
     color: var(--mint-700);
 }
 
-/* Card Actions (IntelliKnit style) */
+/* Card Actions - EXACT IntelliKnit style */
 .card-actions {
-    display: flex;
-    gap: 1rem;
-    margin-top: 2rem;
-    padding-top: 2rem;
-    border-top: 2px solid var(--warm-200);
-    justify-content: flex-end;
-    align-items: center;
-}
-
-.undo-button {
-    background: white;
-    border: 2px solid var(--warm-300);
-    color: var(--warm-600);
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    font-size: 1.75rem;
-    font-weight: 400;
-    cursor: pointer;
-    transition: all 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 0;
+    border-top: none;
+}
+
+.current-number {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--warm-800);
+    min-width: 100px;
+    text-align: center;
+}
+
+.undo-button {
+    padding: 1rem;
+    border-radius: 50%;
+    background: #FED7AA;
+    color: #EA580C;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.undo-button:hover:not(:disabled) {
+    background: #FDBA74;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .undo-button:active:not(:disabled) {
-    background: var(--warm-50);
+    background: #FB923C;
     transform: scale(0.95);
 }
 
 .undo-button:disabled {
-    opacity: 0.3;
+    background: #F3F4F6;
+    color: #9CA3AF;
     cursor: not-allowed;
 }
 
 .complete-button {
-    background: var(--mint-600);
-    border: none;
-    color: white;
-    width: 80px;
-    height: 80px;
+    padding: 1.5rem;
     border-radius: 50%;
-    font-size: 3rem;
-    font-weight: 300;
+    background: var(--mint-600);
+    color: white;
+    border: none;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.15s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.complete-button:hover {
+    background: var(--mint-700);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .complete-button:active {
     background: var(--mint-700);
     transform: scale(0.95);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Help Modal */
