@@ -48,8 +48,8 @@ textarea.form-input {
 .increment-input {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    max-width: 280px;
+    gap: 0.5rem;
+    max-width: 200px;
 }
 
 .increment-btn-minus,
@@ -263,19 +263,19 @@ textarea.form-input {
 @media (max-width: 640px) {
     .increment-input {
         max-width: 100%;
-        gap: 1rem;
+        gap: 0.5rem;
     }
 
     .increment-btn-minus,
     .increment-btn-plus {
-        width: 60px;
-        height: 60px;
-        font-size: 1.75rem;
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
     }
 
     .increment-value {
-        font-size: 1.75rem;
-        min-height: 60px;
+        font-size: 1.5rem;
+        min-height: 50px;
     }
 
     .abbreviation-bar {
