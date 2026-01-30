@@ -89,11 +89,12 @@ textarea.form-input {
 }
 
 .increment-value {
-    flex: 1;
+    flex: 0 1 auto;
+    width: 80px;
     text-align: center;
     font-size: 1.5rem;
     font-weight: 600;
-    padding: 1rem;
+    padding: 1rem 0.5rem;
     border: 2px solid var(--warm-200);
     border-radius: 10px;
     color: var(--warm-800);
