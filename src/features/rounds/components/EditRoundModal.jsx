@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useProjects } from '../../projects/context/ProjectsContext';
 import { ACTIONS } from '../../projects/hooks/projectsReducer';
 import { Modal, Button } from '../../../shared/components';
@@ -143,7 +143,7 @@ function EditRoundModal({ isOpen, onClose, projectId, componentId, round }) {
 
                 {/* Abbreviation Bar - moved directly under textarea */}
                 <div className={styles['abbreviation-bar']}>
-                    
+
                     {/* Common Abbreviations */}
                     <div className={styles['abbreviation-buttons']}>
                         {COMMON_ABBREVIATIONS.map(({ abbr, label }) => (
@@ -157,7 +157,7 @@ function EditRoundModal({ isOpen, onClose, projectId, componentId, round }) {
                             </button>
                         ))}
                     </div>
-                    
+
                     {/* Advanced Abbreviations */}
                     <div className={styles['abbreviation-buttons']}>
                         {ADVANCED_ABBREVIATIONS.map(({ abbr, label }) => (
@@ -171,7 +171,7 @@ function EditRoundModal({ isOpen, onClose, projectId, componentId, round }) {
                             </button>
                         ))}
                     </div>
-                    
+
                     {/* Punctuation */}
                     <div className={styles['punctuation-buttons']}>
                         {PUNCTUATION.map(({ abbr, label }) => (

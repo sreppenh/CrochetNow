@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useProjects } from '../../projects/context/ProjectsContext';
 import { ACTIONS } from '../../projects/hooks/projectsReducer';
 import { Modal, Button } from '../../../shared/components';
@@ -43,8 +43,8 @@ function RoundEntryModal({ isOpen, onClose, projectId, componentId }) {
     // Find component to get previous stitch count
     const project = state.projects.find(p => p.id === projectId);
     const component = project?.components.find(c => c.id === componentId);
-    const previousCount = component && component.rounds.length > 0 
-        ? component.rounds[component.rounds.length - 1].stitchCount 
+    const previousCount = component && component.rounds.length > 0
+        ? component.rounds[component.rounds.length - 1].stitchCount
         : 0;
     const nextRoundNumber = component ? component.rounds.length + 1 : 1;
 
@@ -147,7 +147,7 @@ function RoundEntryModal({ isOpen, onClose, projectId, componentId }) {
 
                 {/* Abbreviation Bar - moved directly under textarea */}
                 <div className={styles['abbreviation-bar']}>
-                    
+
                     {/* Common Abbreviations */}
                     <div className={styles['abbreviation-buttons']}>
                         {COMMON_ABBREVIATIONS.map(({ abbr, label }) => (
@@ -161,7 +161,7 @@ function RoundEntryModal({ isOpen, onClose, projectId, componentId }) {
                             </button>
                         ))}
                     </div>
-                    
+
                     {/* Advanced Abbreviations */}
                     <div className={styles['abbreviation-buttons']}>
                         {ADVANCED_ABBREVIATIONS.map(({ abbr, label }) => (
@@ -175,7 +175,7 @@ function RoundEntryModal({ isOpen, onClose, projectId, componentId }) {
                             </button>
                         ))}
                     </div>
-                    
+
                     {/* Punctuation */}
                     <div className={styles['punctuation-buttons']}>
                         {PUNCTUATION.map(({ abbr, label }) => (
