@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useProjects } from '../../projects/context/ProjectsContext';
 import { ACTIONS } from '../../projects/hooks/projectsReducer';
 import { Modal, Button } from '../../../shared/components';
@@ -36,17 +36,18 @@ const PUNCTUATION = [
 function RoundEntryModal({ isOpen, onClose, projectId, componentId }) {
     const { state, dispatch } = useProjects();
     const [instruction, setInstruction] = useState('');
-    const [stitchCount, setStitchCount] = useState('');
     const [error, setError] = useState('');
     const textareaRef = useRef(null);
 
     // Find component to get previous stitch count
     const project = state.projects.find(p => p.id === projectId);
     const component = project?.components.find(c => c.id === componentId);
-    const previousCount = component && component.rounds.length > 0
-        ? component.rounds[component.rounds.length - 1].stitchCount
+    const previousCount = component && component.rounds.length > 0 
+        ? component.rounds[component.rounds.length - 1].stitchCount 
         : 0;
     const nextRoundNumber = component ? component.rounds.length + 1 : 1;
+    
+    const [stitchCount, setStitchCount] = useState(previousCount > 0 ? previousCount.toString() : '');
 
     // Insert text at cursor position
     const insertText = (text) => {
@@ -147,7 +148,7 @@ function RoundEntryModal({ isOpen, onClose, projectId, componentId }) {
 
                 {/* Abbreviation Bar - moved directly under textarea */}
                 <div className={styles['abbreviation-bar']}>
-
+                    
                     {/* Common Abbreviations */}
                     <div className={styles['abbreviation-buttons']}>
                         {COMMON_ABBREVIATIONS.map(({ abbr, label }) => (
@@ -161,7 +162,7 @@ function RoundEntryModal({ isOpen, onClose, projectId, componentId }) {
                             </button>
                         ))}
                     </div>
-
+                    
                     {/* Advanced Abbreviations */}
                     <div className={styles['abbreviation-buttons']}>
                         {ADVANCED_ABBREVIATIONS.map(({ abbr, label }) => (
@@ -175,7 +176,7 @@ function RoundEntryModal({ isOpen, onClose, projectId, componentId }) {
                             </button>
                         ))}
                     </div>
-
+                    
                     {/* Punctuation */}
                     <div className={styles['punctuation-buttons']}>
                         {PUNCTUATION.map(({ abbr, label }) => (

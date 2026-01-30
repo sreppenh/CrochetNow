@@ -169,6 +169,9 @@
     padding: 1.5rem;
     background: var(--warm-50);
     border-radius: 16px;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 /* Tappable Abbreviations */
@@ -212,58 +215,66 @@
     color: var(--mint-700);
 }
 
-/* Card Actions (buttons in card) */
+/* Card Actions (IntelliKnit style) */
 .card-actions {
     display: flex;
     gap: 1rem;
     margin-top: 2rem;
     padding-top: 2rem;
     border-top: 2px solid var(--warm-200);
+    justify-content: flex-end;
+    align-items: center;
 }
 
-.previous-button,
-.complete-button {
-    flex: 1;
-    padding: 1.25rem;
-    border-radius: 12px;
-    font-size: 1.125rem;
-    font-weight: 600;
+.undo-button {
+    background: white;
+    border: 2px solid var(--warm-300);
+    color: var(--warm-600);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    font-size: 1.75rem;
+    font-weight: 400;
     cursor: pointer;
     transition: all 0.2s;
-    border: 2px solid;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    min-height: 60px;
+    flex-shrink: 0;
 }
 
-.previous-button {
-    background: white;
-    border-color: var(--warm-300);
-    color: var(--warm-700);
-}
-
-.previous-button:active:not(:disabled) {
+.undo-button:active:not(:disabled) {
     background: var(--warm-50);
-    border-color: var(--warm-400);
-    transform: scale(0.98);
+    transform: scale(0.95);
 }
 
-.previous-button:disabled {
-    opacity: 0.4;
+.undo-button:disabled {
+    opacity: 0.3;
     cursor: not-allowed;
 }
 
 .complete-button {
-    background: var(--mint-500);
-    border-color: var(--mint-600);
+    background: var(--mint-600);
+    border: none;
     color: white;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    font-size: 3rem;
+    font-weight: 300;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .complete-button:active {
-    background: var(--mint-600);
-    transform: scale(0.98);
+    background: var(--mint-700);
+    transform: scale(0.95);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Help Modal */

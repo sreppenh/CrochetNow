@@ -25,8 +25,8 @@ function ProjectDetail() {
     }
 
     const handleComponentClick = (componentId) => {
-        // Navigate to component detail (manage rounds view)
-        navigate(`/project/${projectId}/component/${componentId}`);
+        // Navigate directly to crochet mode
+        navigate(`/project/${projectId}/component/${componentId}/crochet`);
     };
 
     const handleContinueCrocheting = () => {
@@ -141,18 +141,11 @@ function ProjectDetail() {
 
                         <div className={styles['button-group']}>
                             <Button 
-                                variant="secondary"
+                                variant="primary"
                                 fullWidth
                                 onClick={() => setShowAddComponentModal(true)}
                             >
                                 + Add Component
-                            </Button>
-                            <Button 
-                                variant="primary" 
-                                fullWidth
-                                onClick={handleContinueCrocheting}
-                            >
-                                🧶 Continue Crocheting
                             </Button>
                         </div>
                     </>
