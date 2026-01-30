@@ -270,37 +270,37 @@ export function projectsReducer(state, action) {
         }
 
         case ACTIONS.DELETE_ROUND: {
-            if (!state.currentProject) return state;
+            const { projectId, componentId, roundId } = action.payload;
 
-            const { componentId, roundId } = action.payload;
+            const updatedProjects = state.projects.map(project => {
+                if (project.id === projectId) {
+                    const updatedComponents = project.components.map(c => {
+                        if (c.id === componentId) {
+                            const filteredRounds = c.rounds.filter(r => r.id !== roundId);
+                            // Renumber remaining rounds
+                            const renumbered = filteredRounds.map((r, index) => ({
+                                ...r,
+                                roundNumber: index + 1
+                            }));
+                            return { ...c, rounds: renumbered };
+                        }
+                        return c;
+                    });
 
-            const updatedComponents = state.currentProject.components.map(c => {
-                if (c.id === componentId) {
-                    const filteredRounds = c.rounds.filter(r => r.id !== roundId);
-                    // Renumber remaining rounds
-                    const renumbered = filteredRounds.map((r, index) => ({
-                        ...r,
-                        roundNumber: index + 1
-                    }));
-                    return { ...c, rounds: renumbered };
+                    return {
+                        ...project,
+                        components: updatedComponents,
+                        updated: new Date().toISOString()
+                    };
                 }
-                return c;
+                return project;
             });
-
-            const updatedProject = {
-                ...state.currentProject,
-                components: updatedComponents,
-                updated: new Date().toISOString()
-            };
 
             logger.success('Round deleted');
 
             return {
                 ...state,
-                currentProject: updatedProject,
-                projects: state.projects.map(p =>
-                    p.id === updatedProject.id ? updatedProject : p
-                )
+                projects: updatedProjects
             };
         }
 
