@@ -19,6 +19,8 @@ const ADVANCED_ABBREVIATIONS = [
     { abbr: 'sl st', label: 'sl st' },
     { abbr: 'tr', label: 'tr' },
     { abbr: 'invdec', label: 'invdec' },
+    { abbr: 'inv fo', label: 'inv fo' },
+    { abbr: 'change color', label: 'change color' },
     { abbr: 'FLO', label: 'FLO' },
     { abbr: 'BLO', label: 'BLO' },
     { abbr: 'sts', label: 'sts' },
@@ -67,13 +69,15 @@ function RoundEntryModal({ isOpen, onClose, projectId, componentId }) {
         const suffix = needsSpaceAfter ? ' ' : '';
 
         const newValue = currentValue.substring(0, start) + prefix + text + suffix + currentValue.substring(end);
-        setInstruction(newValue);
+        const newCursorPos = start + prefix.length + text.length + suffix.length;
 
-        // Set cursor position after inserted text
+        setInstruction(newValue);
+        setError('');
+
+        // Restore cursor position after state updates
         setTimeout(() => {
-            const newCursorPos = start + prefix.length + text.length + suffix.length;
-            textarea.setSelectionRange(newCursorPos, newCursorPos);
             textarea.focus();
+            textarea.setSelectionRange(newCursorPos, newCursorPos);
         }, 0);
     };
 
@@ -81,24 +85,22 @@ function RoundEntryModal({ isOpen, onClose, projectId, componentId }) {
         e.preventDefault();
 
         if (!instruction.trim()) {
-            setError('Please enter a round instruction');
+            setError('Instruction is required');
             return;
         }
 
-        const count = parseInt(stitchCount);
-        if (!stitchCount || isNaN(count) || count < 0) {
-            setError('Please enter a valid stitch count');
+        if (!stitchCount || parseInt(stitchCount) < 0) {
+            setError('Valid stitch count is required');
             return;
         }
 
-        // Dispatch action to add round
         dispatch({
             type: ACTIONS.ADD_ROUND,
             payload: {
                 projectId,
                 componentId,
                 instruction: instruction.trim(),
-                stitchCount: count
+                stitchCount: parseInt(stitchCount)
             }
         });
 
@@ -116,7 +118,7 @@ function RoundEntryModal({ isOpen, onClose, projectId, componentId }) {
         onClose();
     };
 
-    // Focus textarea when modal opens
+    // Auto-focus textarea when modal opens
     useEffect(() => {
         if (isOpen && textareaRef.current) {
             textareaRef.current.focus();
@@ -128,7 +130,6 @@ function RoundEntryModal({ isOpen, onClose, projectId, componentId }) {
             isOpen={isOpen}
             onClose={handleClose}
             title={`Add Round ${nextRoundNumber}`}
-            size="medium"
         >
             <form onSubmit={handleSubmit}>
                 <div className={styles['form-group']}>
@@ -224,11 +225,6 @@ function RoundEntryModal({ isOpen, onClose, projectId, componentId }) {
                             +
                         </button>
                     </div>
-                    {previousCount > 0 && (
-                        <div className={styles['form-hint']}>
-                            Previous round: {previousCount} stitches
-                        </div>
-                    )}
                 </div>
 
                 {error && (
@@ -238,17 +234,10 @@ function RoundEntryModal({ isOpen, onClose, projectId, componentId }) {
                 )}
 
                 <div className={styles['modal-actions']}>
-                    <Button
-                        variant="secondary"
-                        onClick={handleClose}
-                        type="button"
-                    >
+                    <Button variant="secondary" onClick={handleClose} type="button">
                         Cancel
                     </Button>
-                    <Button
-                        variant="primary"
-                        type="submit"
-                    >
+                    <Button variant="primary" type="submit">
                         Add Round
                     </Button>
                 </div>

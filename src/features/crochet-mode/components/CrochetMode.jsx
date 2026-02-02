@@ -140,37 +140,65 @@ function CrochetMode() {
 
     const showColorAndHook = currentRoundIndex === 0 || hasColorChange || hasHookChange;
 
-    // Render instruction with tappable abbreviations
+    // Render instruction with tappable abbreviations (handles multi-word abbrs and punctuation)
     const renderInstruction = (instruction) => {
-        const words = instruction.split(/(\s+)/);
+        const result = [];
+        let remaining = instruction;
+        let keyIndex = 0;
 
-        return words.map((word, index) => {
-            // Preserve whitespace
-            if (/^\s+$/.test(word)) {
-                return <span key={index}>{word}</span>;
+        // Sort abbreviations by length (longest first) so "sl st" is checked before "sl" or "st"
+        const sortedAbbreviations = [...CROCHET_ABBREVIATIONS].sort((a, b) => 
+            b.abbr.length - a.abbr.length
+        );
+
+        while (remaining.length > 0) {
+            let matched = false;
+
+            // Try to match each abbreviation at the current position
+            for (const abbr of sortedAbbreviations) {
+                const abbrPattern = abbr.abbr.toLowerCase();
+                const remainingLower = remaining.toLowerCase();
+
+                // Check if abbreviation matches at current position
+                // Must be followed by space, punctuation, or end of string
+                const matchIndex = remainingLower.indexOf(abbrPattern);
+                
+                if (matchIndex === 0) {
+                    const afterAbbr = remaining.charAt(abbrPattern.length);
+                    const isWordBoundary = !afterAbbr || /[\s,()x]/.test(afterAbbr);
+                    
+                    if (isWordBoundary) {
+                        // Extract the actual text (preserving case)
+                        const matchedText = remaining.substring(0, abbrPattern.length);
+                        
+                        result.push(
+                            <span
+                                key={keyIndex++}
+                                className={styles['tappable-abbr']}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setShowAbbreviationHelp(abbr);
+                                }}
+                            >
+                                {matchedText}
+                            </span>
+                        );
+                        
+                        remaining = remaining.substring(abbrPattern.length);
+                        matched = true;
+                        break;
+                    }
+                }
             }
 
-            const cleanWord = word.trim().toLowerCase();
-            const abbr = CROCHET_ABBREVIATIONS.find(a =>
-                a.abbr.toLowerCase() === cleanWord
-            );
-
-            if (abbr) {
-                return (
-                    <span
-                        key={index}
-                        className={styles['tappable-abbr']}
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setShowAbbreviationHelp(abbr);
-                        }}
-                    >
-                        {word}
-                    </span>
-                );
+            if (!matched) {
+                // No abbreviation matched, add the next character as plain text
+                result.push(<span key={keyIndex++}>{remaining.charAt(0)}</span>);
+                remaining = remaining.substring(1);
             }
-            return <span key={index}>{word}</span>;
-        });
+        }
+
+        return result;
     };
 
     return (

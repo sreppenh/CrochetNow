@@ -19,6 +19,8 @@ const ADVANCED_ABBREVIATIONS = [
     { abbr: 'sl st', label: 'sl st' },
     { abbr: 'tr', label: 'tr' },
     { abbr: 'invdec', label: 'invdec' },
+    { abbr: 'inv fo', label: 'inv fo' },
+    { abbr: 'change color', label: 'change color' },
     { abbr: 'FLO', label: 'FLO' },
     { abbr: 'BLO', label: 'BLO' },
     { abbr: 'sts', label: 'sts' },
@@ -68,15 +70,20 @@ function EditRoundModal({ isOpen, onClose, projectId, componentId, round }) {
         const needsSpaceBefore = before.length > 0 && before[before.length - 1] !== ' ' && text !== '(' && text !== ')' && text !== ',';
         const prefix = needsSpaceBefore ? ' ' : '';
 
-        const newInstruction = before + prefix + text + after;
-        setInstruction(newInstruction);
+        // Add space after if needed (except for punctuation)
+        const needsSpaceAfter = text !== '(' && text !== ')' && text !== ',';
+        const suffix = needsSpaceAfter ? ' ' : '';
 
-        // Move cursor after inserted text
+        const newValue = before + prefix + text + suffix + after;
+        const newCursorPos = start + prefix.length + text.length + suffix.length;
+
+        setInstruction(newValue);
+        setError('');
+
+        // Restore cursor position
         setTimeout(() => {
-            const newPosition = start + prefix.length + text.length;
-            textarea.selectionStart = newPosition;
-            textarea.selectionEnd = newPosition;
             textarea.focus();
+            textarea.setSelectionRange(newCursorPos, newCursorPos);
         }, 0);
     };
 
@@ -84,17 +91,15 @@ function EditRoundModal({ isOpen, onClose, projectId, componentId, round }) {
         e.preventDefault();
 
         if (!instruction.trim()) {
-            setError('Please enter an instruction');
+            setError('Instruction is required');
             return;
         }
 
-        const count = parseInt(stitchCount);
-        if (!stitchCount || isNaN(count) || count < 0) {
-            setError('Please enter a valid stitch count');
+        if (!stitchCount || parseInt(stitchCount) < 0) {
+            setError('Valid stitch count is required');
             return;
         }
 
-        // Dispatch update action
         dispatch({
             type: ACTIONS.UPDATE_ROUND,
             payload: {
@@ -102,30 +107,28 @@ function EditRoundModal({ isOpen, onClose, projectId, componentId, round }) {
                 componentId,
                 roundId: round.id,
                 instruction: instruction.trim(),
-                stitchCount: count
+                stitchCount: parseInt(stitchCount)
             }
         });
 
-        // Close modal
-        handleClose();
-    };
-
-    const handleClose = () => {
-        setInstruction(round?.instruction || '');
-        setStitchCount(round?.stitchCount?.toString() || '');
         setError('');
         onClose();
     };
+
+    const handleClose = () => {
+        setError('');
+        onClose();
+    };
+
+    if (!round) return null;
 
     return (
         <Modal
             isOpen={isOpen}
             onClose={handleClose}
-            title={`Edit Round ${round?.roundNumber}`}
-            size="large"
+            title={`Edit Round ${round.roundNumber}`}
         >
             <form onSubmit={handleSubmit}>
-                {/* Instruction Input */}
                 <div className={styles['form-group']}>
                     <textarea
                         ref={textareaRef}
@@ -187,7 +190,7 @@ function EditRoundModal({ isOpen, onClose, projectId, componentId, round }) {
                     </div>
                 </div>
 
-                {/* Stitch Count Input with +/- buttons */}
+                {/* Stitch Count Input */}
                 <div className={styles['form-group']}>
                     <label htmlFor="stitch-count" className={styles['form-label']}>
                         Stitch Count <span className={styles.required}>*</span>
@@ -227,19 +230,11 @@ function EditRoundModal({ isOpen, onClose, projectId, componentId, round }) {
                     </div>
                 )}
 
-                {/* Action Buttons */}
                 <div className={styles['modal-actions']}>
-                    <Button
-                        variant="secondary"
-                        onClick={handleClose}
-                        type="button"
-                    >
+                    <Button variant="secondary" onClick={handleClose} type="button">
                         Cancel
                     </Button>
-                    <Button
-                        variant="primary"
-                        type="submit"
-                    >
+                    <Button variant="primary" type="submit">
                         Save Changes
                     </Button>
                 </div>
