@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, RotateCcw } from 'lucide-react';
+import { ChevronLeft, ChevronRight, RotateCcw, Check } from 'lucide-react';
 import { useProjects } from '../../projects/context/ProjectsContext';
 import { ACTIONS } from '../../projects/hooks/projectsReducer';
 import { YARN_COLORS } from '../../../shared/data/yarnColors';
@@ -88,9 +88,9 @@ function CrochetMode() {
             // Move to next round
             updateCurrentRound(currentRoundIndex + 1);
         } else {
-            // Last round completed
+            // Last round completed - go back to ProjectDetail (list of all components)
             alert('Component complete! 🎉');
-            navigate(`/project/${projectId}/component/${componentId}`);
+            navigate(`/project/${projectId}`);
         }
     };
 
@@ -279,7 +279,7 @@ function CrochetMode() {
                             onClick={handleCompleteRound}
                             aria-label="Mark complete"
                         >
-                            <ChevronRight size={28} />
+                            <Check size={28} />
                         </button>
                     </div>
                 </div>
