@@ -51,6 +51,13 @@ function RoundEntryModal({ isOpen, onClose, projectId, componentId }) {
     
     const [stitchCount, setStitchCount] = useState(previousCount > 0 ? previousCount.toString() : '');
 
+    // Update stitch count when previousCount changes or modal opens
+    useEffect(() => {
+        if (isOpen && previousCount > 0) {
+            setStitchCount(previousCount.toString());
+        }
+    }, [isOpen, previousCount]);
+
     // Insert text at cursor position
     const insertText = (text) => {
         const textarea = textareaRef.current;
