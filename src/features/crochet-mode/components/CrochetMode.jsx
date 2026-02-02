@@ -327,6 +327,8 @@ function getAbbreviationDescription(abbr) {
         'dec': 'Insert hook in stitch, yarn over and pull through, insert hook in next stitch, yarn over and pull through (3 loops on hook), yarn over and pull through all 3 loops.',
         'invdec': 'Insert hook in front loop of first stitch, then front loop of second stitch, yarn over and pull through both front loops, yarn over and pull through 2 loops.',
         'MR': 'Wrap yarn around fingers to form a ring, insert hook through ring, yarn over and pull through, chain 1, then work stitches into the ring. Pull tail to close ring.',
+        'inv fo': 'Insert hook into front loop of next stitch, pull yarn through (2 loops on hook), cut yarn leaving a tail, pull tail through both loops. Weave in end through several stitches to secure.',
+        'change color': 'Work last stitch of current color until 2 loops remain on hook, yarn over with new color and pull through both loops to complete the stitch. Continue with new color. Carry unused yarn inside if working in rounds.',
         'ch': 'Yarn over and pull through loop on hook.',
         'sl st': 'Insert hook into stitch, yarn over and pull through both the stitch and the loop on hook.',
         'tr': 'Yarn over twice, insert hook into stitch, yarn over and pull through (4 loops on hook), [yarn over and pull through 2 loops] three times.',

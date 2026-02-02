@@ -20,6 +20,8 @@ export const CROCHET_ABBREVIATIONS = [
     
     // ===== SPECIAL TECHNIQUES =====
     { abbr: 'MR', full: 'magic ring', category: 'start' },
+    { abbr: 'inv fo', full: 'invisible fasten off', category: 'finish' },
+    { abbr: 'change color', full: 'color change', category: 'colorwork' },
     { abbr: 'FLO', full: 'front loop only', category: 'modifier' },
     { abbr: 'BLO', full: 'back loop only', category: 'modifier' },
     { abbr: 'BL', full: 'back loop', category: 'modifier' },
