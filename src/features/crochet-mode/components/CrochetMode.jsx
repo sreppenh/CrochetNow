@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, RotateCcw } from 'lucide-react';
 import { useProjects } from '../../projects/context/ProjectsContext';
+import { ACTIONS } from '../../projects/hooks/projectsReducer';
 import { YARN_COLORS } from '../../../shared/data/yarnColors';
 import { CROCHET_ABBREVIATIONS } from '../../../shared/data/crochetAbbreviations';
 import styles from './CrochetMode.module.css';
@@ -9,9 +10,8 @@ import styles from './CrochetMode.module.css';
 function CrochetMode() {
     const { projectId, componentId } = useParams();
     const navigate = useNavigate();
-    const { state } = useProjects();
+    const { state, dispatch } = useProjects();
 
-    const [currentRoundIndex, setCurrentRoundIndex] = useState(0);
     const [showAbbreviationHelp, setShowAbbreviationHelp] = useState(null);
     const [touchStart, setTouchStart] = useState(null);
     const [touchEnd, setTouchEnd] = useState(null);
@@ -20,7 +20,22 @@ function CrochetMode() {
     const project = state.projects.find(p => p.id === projectId);
     const component = project?.components.find(c => c.id === componentId);
     const rounds = component?.rounds || [];
+    
+    // Use currentRound from component state (like IntelliKnit's currentStep)
+    const currentRoundIndex = component?.currentRound ?? 0;
     const currentRound = rounds[currentRoundIndex];
+
+    // Update currentRound in state when it changes
+    const updateCurrentRound = useCallback((newIndex) => {
+        dispatch({
+            type: ACTIONS.UPDATE_CURRENT_ROUND,
+            payload: {
+                projectId,
+                componentId,
+                currentRound: newIndex
+            }
+        });
+    }, [dispatch, projectId, componentId]);
 
     // Navigation - defined before early return
     const canGoLeft = currentRoundIndex > 0;
@@ -28,15 +43,15 @@ function CrochetMode() {
 
     const navigateLeft = useCallback(() => {
         if (canGoLeft) {
-            setCurrentRoundIndex(prev => prev - 1);
+            updateCurrentRound(currentRoundIndex - 1);
         }
-    }, [canGoLeft]);
+    }, [canGoLeft, currentRoundIndex, updateCurrentRound]);
 
     const navigateRight = useCallback(() => {
         if (canGoRight) {
-            setCurrentRoundIndex(prev => prev + 1);
+            updateCurrentRound(currentRoundIndex + 1);
         }
-    }, [canGoRight]);
+    }, [canGoRight, currentRoundIndex, updateCurrentRound]);
 
     // Keyboard navigation
     useEffect(() => {
@@ -48,7 +63,7 @@ function CrochetMode() {
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [navigateLeft, navigateRight, navigate, projectId, componentId]);
+    }, [navigateLeft, navigateRight, navigate, projectId]);
 
     // Redirect if not found
     useEffect(() => {
@@ -67,10 +82,13 @@ function CrochetMode() {
         return YARN_COLORS.find(c => c.name === colorName)?.hex || '#cccccc';
     };
 
+    // Checkmark = complete round and move to next (like IntelliKnit)
     const handleCompleteRound = () => {
         if (currentRoundIndex < rounds.length - 1) {
-            setCurrentRoundIndex(currentRoundIndex + 1);
+            // Move to next round
+            updateCurrentRound(currentRoundIndex + 1);
         } else {
+            // Last round completed
             alert('Component complete! 🎉');
             navigate(`/project/${projectId}/component/${componentId}`);
         }
@@ -78,7 +96,7 @@ function CrochetMode() {
 
     const handleUndo = () => {
         if (currentRoundIndex > 0) {
-            setCurrentRoundIndex(currentRoundIndex - 1);
+            updateCurrentRound(currentRoundIndex - 1);
         }
     };
 

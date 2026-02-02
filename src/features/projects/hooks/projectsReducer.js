@@ -18,13 +18,20 @@ export const ACTIONS = {
     ADD_ROUND: 'ADD_ROUND',
     UPDATE_ROUND: 'UPDATE_ROUND',
     DELETE_ROUND: 'DELETE_ROUND',
-    INCREMENT_COMPONENT_COMPLETION: 'INCREMENT_COMPONENT_COMPLETION'
+    INCREMENT_COMPONENT_COMPLETION: 'INCREMENT_COMPONENT_COMPLETION',
+    UPDATE_CURRENT_ROUND: 'UPDATE_CURRENT_ROUND'
 };
 
 export const initialState = {
     projects: [],
     currentProject: null
 };
+
+// Helper function to update project activity timestamp (like IntelliKnit)
+const updateProjectActivity = (project) => ({
+    ...project,
+    lastActivityAt: new Date().toISOString()
+});
 
 export function projectsReducer(state, action) {
     switch (action.type) {
@@ -42,6 +49,7 @@ export function projectsReducer(state, action) {
                 defaultColor: action.payload.defaultColor || null,
                 created: new Date().toISOString(),
                 updated: new Date().toISOString(),
+                lastActivityAt: new Date().toISOString(), // Track activity
                 components: []
             };
 
@@ -55,6 +63,7 @@ export function projectsReducer(state, action) {
                     completedCount: 0,
                     color: firstComp.color,
                     hook: firstComp.hook,
+                    currentRound: 0, // Track current position like IntelliKnit's currentStep
                     rounds: [],
                     created: new Date().toISOString(),
                     updated: new Date().toISOString()
@@ -118,14 +127,17 @@ export function projectsReducer(state, action) {
                         color,
                         hook,
                         completedCount: 0,
+                        currentRound: 0, // Track current position
                         rounds: []
                     };
 
-                    return {
+                    const updatedProject = {
                         ...project,
                         components: [...project.components, newComponent],
                         updated: new Date().toISOString()
                     };
+
+                    return updateProjectActivity(updatedProject);
                 }
                 return project;
             });
@@ -146,7 +158,7 @@ export function projectsReducer(state, action) {
 
             const updatedProjects = state.projects.map(project => {
                 if (project.id === projectId) {
-                    return {
+                    const updatedProject = {
                         ...project,
                         components: project.components.map(component =>
                             component.id === componentId 
@@ -155,6 +167,8 @@ export function projectsReducer(state, action) {
                         ),
                         updated: new Date().toISOString()
                     };
+
+                    return updateProjectActivity(updatedProject);
                 }
                 return project;
             });
@@ -175,11 +189,13 @@ export function projectsReducer(state, action) {
 
             const updatedProjects = state.projects.map(project => {
                 if (project.id === projectId) {
-                    return {
+                    const updatedProject = {
                         ...project,
                         components: project.components.filter(c => c.id !== componentId),
                         updated: new Date().toISOString()
                     };
+
+                    return updateProjectActivity(updatedProject);
                 }
                 return project;
             });
@@ -215,11 +231,13 @@ export function projectsReducer(state, action) {
                         return component;
                     });
 
-                    return {
+                    const updatedProject = {
                         ...project,
                         components: updatedComponents,
                         updated: new Date().toISOString()
                     };
+
+                    return updateProjectActivity(updatedProject);
                 }
                 return project;
             });
@@ -228,7 +246,10 @@ export function projectsReducer(state, action) {
 
             return {
                 ...state,
-                projects: updatedProjects
+                projects: updatedProjects,
+                currentProject: state.currentProject?.id === projectId
+                    ? updatedProjects.find(p => p.id === projectId)
+                    : state.currentProject
             };
         }
 
@@ -237,7 +258,7 @@ export function projectsReducer(state, action) {
 
             const updatedProjects = state.projects.map(project => {
                 if (project.id === projectId) {
-                    return {
+                    const updatedProject = {
                         ...project,
                         components: project.components.map(component => {
                             if (component.id === componentId) {
@@ -254,6 +275,8 @@ export function projectsReducer(state, action) {
                         }),
                         updated: new Date().toISOString()
                     };
+
+                    return updateProjectActivity(updatedProject);
                 }
                 return project;
             });
@@ -287,11 +310,13 @@ export function projectsReducer(state, action) {
                         return c;
                     });
 
-                    return {
+                    const updatedProject = {
                         ...project,
                         components: updatedComponents,
                         updated: new Date().toISOString()
                     };
+
+                    return updateProjectActivity(updatedProject);
                 }
                 return project;
             });
@@ -300,7 +325,10 @@ export function projectsReducer(state, action) {
 
             return {
                 ...state,
-                projects: updatedProjects
+                projects: updatedProjects,
+                currentProject: state.currentProject?.id === projectId
+                    ? updatedProjects.find(p => p.id === projectId)
+                    : state.currentProject
             };
         }
 
@@ -325,14 +353,44 @@ export function projectsReducer(state, action) {
                 updated: new Date().toISOString()
             };
 
+            const projectWithActivity = updateProjectActivity(updatedProject);
+
             logger.success('Component completion incremented');
 
             return {
                 ...state,
-                currentProject: updatedProject,
+                currentProject: projectWithActivity,
                 projects: state.projects.map(p =>
-                    p.id === updatedProject.id ? updatedProject : p
+                    p.id === projectWithActivity.id ? projectWithActivity : p
                 )
+            };
+        }
+
+        case ACTIONS.UPDATE_CURRENT_ROUND: {
+            const { projectId, componentId, currentRound } = action.payload;
+
+            const updatedProjects = state.projects.map(project => {
+                if (project.id === projectId) {
+                    const updatedProject = {
+                        ...project,
+                        components: project.components.map(component =>
+                            component.id === componentId 
+                                ? { ...component, currentRound }
+                                : component
+                        )
+                    };
+
+                    return updateProjectActivity(updatedProject);
+                }
+                return project;
+            });
+
+            return {
+                ...state,
+                projects: updatedProjects,
+                currentProject: state.currentProject?.id === projectId
+                    ? updatedProjects.find(p => p.id === projectId)
+                    : state.currentProject
             };
         }
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProjects } from '../../projects/context/ProjectsContext';
 import { ACTIONS } from '../../projects/hooks/projectsReducer';
+import { getResumeData } from '../../../shared/utils/resumeDetection';
 import CreateProjectFlow from '../../projects/components/CreateProjectFlow';
 import styles from './LandingPage.module.css';
 
@@ -10,31 +11,16 @@ function LandingPage() {
     const { state, dispatch } = useProjects();
     const [showCreateFlow, setShowCreateFlow] = useState(false);
 
-    // Find the most recently worked on project/component
-    const getLastWorkedComponent = () => {
-        // For now, just get the first project's first component
-        // Later we'll add proper "last activity" tracking
-        if (state.projects.length > 0) {
-            const project = state.projects[0];
-            if (project.components && project.components.length > 0) {
-                return {
-                    projectId: project.id,
-                    componentId: project.components[0].id
-                };
-            }
-        }
-        return null;
-    };
-
     const handleContinueCrocheting = () => {
-        const lastWorked = getLastWorkedComponent();
-        if (lastWorked) {
-            // Go directly to crochet mode for last worked component
-            navigate(`/project/${lastWorked.projectId}/component/${lastWorked.componentId}/crochet`);
-        } else {
-            // No projects yet, prompt to create one
+        const resumeData = getResumeData();
+
+        if (!resumeData.hasActiveProject) {
             alert('No projects yet! Create your first project to get started.');
+            return;
         }
+
+        // Navigate directly to crochet mode at the exact round they were on
+        navigate(`/project/${resumeData.projectId}/component/${resumeData.componentId}/crochet`);
     };
 
     const handleViewProjects = () => {
