@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useProjects } from '../../projects/context/ProjectsContext';
+import { ACTIONS } from '../../projects/hooks/projectsReducer';
 import { PageHeader, Card, EmptyState, Button } from '../../../shared/components';
 import AddComponentModal from '../../components/components/AddComponentModal';
 import EditProjectModal from './EditProjectModal';
@@ -10,10 +11,12 @@ import styles from './ProjectDetail.module.css';
 function ProjectDetail() {
     const { projectId } = useParams();
     const navigate = useNavigate();
-    const { state } = useProjects();
+    const { state, dispatch } = useProjects();
     const [showAddComponentModal, setShowAddComponentModal] = useState(false);
     const [showEditProject, setShowEditProject] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
+    const [showCompletionModal, setShowCompletionModal] = useState(false);
+    const [selectedComponent, setSelectedComponent] = useState(null);
 
     // Find the current project
     const project = state.projects.find(p => p.id === projectId);
@@ -27,6 +30,36 @@ function ProjectDetail() {
     const handleComponentClick = (componentId) => {
         // Navigate directly to crochet mode
         navigate(`/project/${projectId}/component/${componentId}/crochet`);
+    };
+
+    const handleCompletionBadgeClick = (e, component) => {
+        e.stopPropagation(); // Don't trigger component click
+        setSelectedComponent(component);
+        setShowCompletionModal(true);
+    };
+
+    const handleIncrement = () => {
+        if (selectedComponent && selectedComponent.completedCount < selectedComponent.quantity) {
+            dispatch({
+                type: ACTIONS.INCREMENT_COMPONENT_COMPLETION,
+                payload: {
+                    projectId,
+                    componentId: selectedComponent.id
+                }
+            });
+        }
+    };
+
+    const handleDecrement = () => {
+        if (selectedComponent && selectedComponent.completedCount > 0) {
+            dispatch({
+                type: ACTIONS.DECREMENT_COMPONENT_COMPLETION,
+                payload: {
+                    projectId,
+                    componentId: selectedComponent.id
+                }
+            });
+        }
     };
 
     // Get status badge class based on completion
@@ -116,9 +149,14 @@ function ProjectDetail() {
                                                 >
                                                     ✏️
                                                 </button>
-                                                <span className={getStatusClass(component.completedCount, component.quantity)}>
-                                                    {component.completedCount} of {component.quantity} {isComplete ? 'complete' : component.completedCount === 0 ? '' : 'done'}
-                                                </span>
+                                                {/* Clickable completion badge */}
+                                                <button
+                                                    className={`${styles['completion-badge']} ${getStatusClass(component.completedCount, component.quantity)}`}
+                                                    onClick={(e) => handleCompletionBadgeClick(e, component)}
+                                                    aria-label="Adjust completion"
+                                                >
+                                                    {component.completedCount} of {component.quantity} ↗
+                                                </button>
                                             </div>
                                             <div className={styles['component-meta']}>
                                                 <div 
@@ -128,7 +166,7 @@ function ProjectDetail() {
                                                 />
                                                 <span className={styles['hook-size']}>{component.hook}</span>
                                                 <span className={styles['rounds-count']}>
-                                                    {component.rounds?.length || 0} {component.rounds?.length === 1 ? 'rnd' : 'rnds'}
+                                                    {component.rounds?.length || 0} {component.rounds?.length === 1 ? 'round' : 'rounds'}
                                                 </span>
                                             </div>
                                         </div>
@@ -137,9 +175,10 @@ function ProjectDetail() {
                             })}
                         </div>
 
-                        <div className={styles['button-group']}>
+                        {/* Add Component Button */}
+                        <div className={styles['add-component-section']}>
                             <Button 
-                                variant="primary"
+                                variant="secondary"
                                 fullWidth
                                 onClick={() => setShowAddComponentModal(true)}
                             >
@@ -150,23 +189,74 @@ function ProjectDetail() {
                 )}
             </div>
 
-            {/* Add Component Modal */}
+            {/* Modals */}
             <AddComponentModal
                 isOpen={showAddComponentModal}
                 onClose={() => setShowAddComponentModal(false)}
                 projectId={projectId}
-                onSuccess={(componentId) => {
-                    // Navigate directly to the new component's detail page
-                    navigate(`/project/${projectId}/component/${componentId}`);
-                }}
             />
 
-            {/* Edit Project Modal */}
             <EditProjectModal
                 isOpen={showEditProject}
                 onClose={() => setShowEditProject(false)}
                 project={project}
             />
+
+            {/* Completion Overlay Modal */}
+            {showCompletionModal && selectedComponent && (
+                <div className={styles['modal-backdrop']} onClick={() => setShowCompletionModal(false)}>
+                    <div className={styles['completion-modal']} onClick={(e) => e.stopPropagation()}>
+                        <button
+                            className={styles['modal-close']}
+                            onClick={() => setShowCompletionModal(false)}
+                        >
+                            ×
+                        </button>
+                        <h3 className={styles['modal-title']}>{selectedComponent.name}</h3>
+                        <p className={styles['modal-subtitle']}>Adjust completion count</p>
+                        
+                        <div className={styles['completion-display']}>
+                            <div className={styles['completion-number']}>
+                                {selectedComponent.completedCount}
+                            </div>
+                            <div className={styles['completion-separator']}>/</div>
+                            <div className={styles['completion-total']}>
+                                {selectedComponent.quantity}
+                            </div>
+                        </div>
+
+                        <div className={styles['completion-progress-bar']}>
+                            <div 
+                                className={styles['completion-progress-fill']}
+                                style={{ width: `${(selectedComponent.completedCount / selectedComponent.quantity) * 100}%` }}
+                            />
+                        </div>
+
+                        <div className={styles['completion-controls']}>
+                            <button
+                                className={styles['completion-btn-decrement']}
+                                onClick={handleDecrement}
+                                disabled={selectedComponent.completedCount === 0}
+                            >
+                                −
+                            </button>
+                            <button
+                                className={styles['completion-btn-increment']}
+                                onClick={handleIncrement}
+                                disabled={selectedComponent.completedCount >= selectedComponent.quantity}
+                            >
+                                +
+                            </button>
+                        </div>
+
+                        {selectedComponent.completedCount === selectedComponent.quantity && (
+                            <div className={styles['completion-message']}>
+                                ✓ All complete!
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

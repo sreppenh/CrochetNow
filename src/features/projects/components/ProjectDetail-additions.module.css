@@ -1,0 +1,300 @@
+/* Existing styles preserved... add these at the end */
+
+/* Edit Button */
+.edit-button {
+    background: transparent;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    transition: all 0.2s;
+    color: var(--warm-600);
+    flex-shrink: 0;
+}
+
+.edit-button:hover {
+    background: var(--warm-100);
+    color: var(--warm-700);
+}
+
+.edit-button:active {
+    transform: scale(0.95);
+}
+
+/* Clickable Completion Badge */
+.completion-badge {
+    padding: 0.375rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.completion-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.completion-badge:active {
+    transform: scale(0.97);
+}
+
+.completion-badge.badge-not-started {
+    background: var(--warm-200);
+    color: var(--warm-700);
+}
+
+.completion-badge.badge-not-started:hover {
+    background: var(--warm-300);
+}
+
+.completion-badge.badge-in-progress {
+    background: var(--coral-100);
+    color: var(--coral-700);
+}
+
+.completion-badge.badge-in-progress:hover {
+    background: var(--coral-200);
+}
+
+.completion-badge.badge-complete {
+    background: var(--mint-100);
+    color: var(--mint-700);
+}
+
+.completion-badge.badge-complete:hover {
+    background: var(--mint-200);
+}
+
+/* Modal Backdrop */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1.5rem;
+}
+
+/* Completion Modal */
+.completion-modal {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2);
+    position: relative;
+    text-align: center;
+}
+
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    font-size: 2rem;
+    color: var(--warm-500);
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-center;
+    border-radius: 50%;
+    transition: all 0.2s;
+    line-height: 1;
+}
+
+.modal-close:hover {
+    background: var(--warm-100);
+    color: var(--warm-700);
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--warm-800);
+    margin: 0 0 0.25rem 0;
+}
+
+.modal-subtitle {
+    font-size: 0.875rem;
+    color: var(--warm-600);
+    margin: 0 0 2rem 0;
+}
+
+/* Completion Display */
+.completion-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.completion-number {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--coral-600);
+}
+
+.completion-separator {
+    font-size: 2rem;
+    color: var(--warm-400);
+    font-weight: 300;
+}
+
+.completion-total {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: var(--warm-600);
+}
+
+/* Progress Bar */
+.completion-progress-bar {
+    width: 100%;
+    height: 12px;
+    background: var(--warm-100);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.completion-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--mint-500), var(--mint-600));
+    transition: width 0.3s ease;
+    border-radius: 12px;
+}
+
+/* Completion Controls */
+.completion-controls {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.completion-btn-decrement,
+.completion-btn-increment {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    font-size: 2rem;
+    font-weight: 300;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.completion-btn-decrement {
+    background: var(--warm-100);
+    color: var(--warm-700);
+}
+
+.completion-btn-decrement:hover:not(:disabled) {
+    background: var(--warm-200);
+    transform: scale(1.05);
+}
+
+.completion-btn-decrement:active:not(:disabled) {
+    transform: scale(0.95);
+}
+
+.completion-btn-decrement:disabled {
+    background: var(--warm-50);
+    color: var(--warm-400);
+    cursor: not-allowed;
+}
+
+.completion-btn-increment {
+    background: var(--mint-500);
+    color: white;
+}
+
+.completion-btn-increment:hover:not(:disabled) {
+    background: var(--mint-600);
+    transform: scale(1.05);
+}
+
+.completion-btn-increment:active:not(:disabled) {
+    transform: scale(0.95);
+}
+
+.completion-btn-increment:disabled {
+    background: var(--mint-200);
+    color: var(--mint-400);
+    cursor: not-allowed;
+}
+
+/* Completion Message */
+.completion-message {
+    color: var(--mint-700);
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 0.75rem;
+    background: var(--mint-50);
+    border-radius: 8px;
+}
+
+/* Add Component Section */
+.add-component-section {
+    margin-top: 1.5rem;
+}
+
+/* Completed Component Styling */
+.component-complete {
+    opacity: 0.9;
+    background: linear-gradient(to right, var(--mint-50), white);
+}
+
+.component-complete .component-name {
+    color: var(--mint-700);
+}
+
+/* Mobile Optimization */
+@media (max-width: 640px) {
+    .completion-modal {
+        padding: 1.5rem;
+    }
+
+    .modal-title {
+        font-size: 1.25rem;
+    }
+
+    .completion-number {
+        font-size: 2.5rem;
+    }
+
+    .completion-total {
+        font-size: 2rem;
+    }
+
+    .completion-separator {
+        font-size: 1.5rem;
+    }
+
+    .completion-btn-decrement,
+    .completion-btn-increment {
+        width: 50px;
+        height: 50px;
+        font-size: 1.75rem;
+    }
+}

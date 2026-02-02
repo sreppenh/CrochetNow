@@ -19,6 +19,8 @@ export const ACTIONS = {
     UPDATE_ROUND: 'UPDATE_ROUND',
     DELETE_ROUND: 'DELETE_ROUND',
     INCREMENT_COMPONENT_COMPLETION: 'INCREMENT_COMPONENT_COMPLETION',
+    DECREMENT_COMPONENT_COMPLETION: 'DECREMENT_COMPONENT_COMPLETION',
+    SET_COMPONENT_COMPLETION: 'SET_COMPONENT_COMPLETION',
     UPDATE_CURRENT_ROUND: 'UPDATE_CURRENT_ROUND'
 };
 
@@ -333,36 +335,106 @@ export function projectsReducer(state, action) {
         }
 
         case ACTIONS.INCREMENT_COMPONENT_COMPLETION: {
-            if (!state.currentProject) return state;
+            const { projectId, componentId } = action.payload;
 
-            const { componentId } = action.payload;
-
-            const updatedComponents = state.currentProject.components.map(c => {
-                if (c.id === componentId && c.completedCount < c.quantity) {
-                    return {
-                        ...c,
-                        completedCount: c.completedCount + 1
+            const updatedProjects = state.projects.map(project => {
+                if (project.id === projectId) {
+                    const updatedProject = {
+                        ...project,
+                        components: project.components.map(c => {
+                            if (c.id === componentId && c.completedCount < c.quantity) {
+                                return {
+                                    ...c,
+                                    completedCount: c.completedCount + 1
+                                };
+                            }
+                            return c;
+                        })
                     };
+
+                    return updateProjectActivity(updatedProject);
                 }
-                return c;
+                return project;
             });
-
-            const updatedProject = {
-                ...state.currentProject,
-                components: updatedComponents,
-                updated: new Date().toISOString()
-            };
-
-            const projectWithActivity = updateProjectActivity(updatedProject);
 
             logger.success('Component completion incremented');
 
             return {
                 ...state,
-                currentProject: projectWithActivity,
-                projects: state.projects.map(p =>
-                    p.id === projectWithActivity.id ? projectWithActivity : p
-                )
+                projects: updatedProjects,
+                currentProject: state.currentProject?.id === projectId
+                    ? updatedProjects.find(p => p.id === projectId)
+                    : state.currentProject
+            };
+        }
+
+        case ACTIONS.DECREMENT_COMPONENT_COMPLETION: {
+            const { projectId, componentId } = action.payload;
+
+            const updatedProjects = state.projects.map(project => {
+                if (project.id === projectId) {
+                    const updatedProject = {
+                        ...project,
+                        components: project.components.map(c => {
+                            if (c.id === componentId && c.completedCount > 0) {
+                                return {
+                                    ...c,
+                                    completedCount: c.completedCount - 1
+                                };
+                            }
+                            return c;
+                        })
+                    };
+
+                    return updateProjectActivity(updatedProject);
+                }
+                return project;
+            });
+
+            logger.success('Component completion decremented');
+
+            return {
+                ...state,
+                projects: updatedProjects,
+                currentProject: state.currentProject?.id === projectId
+                    ? updatedProjects.find(p => p.id === projectId)
+                    : state.currentProject
+            };
+        }
+
+        case ACTIONS.SET_COMPONENT_COMPLETION: {
+            const { projectId, componentId, completedCount } = action.payload;
+
+            const updatedProjects = state.projects.map(project => {
+                if (project.id === projectId) {
+                    const updatedProject = {
+                        ...project,
+                        components: project.components.map(c => {
+                            if (c.id === componentId) {
+                                // Clamp value between 0 and quantity
+                                const newCount = Math.max(0, Math.min(completedCount, c.quantity));
+                                return {
+                                    ...c,
+                                    completedCount: newCount
+                                };
+                            }
+                            return c;
+                        })
+                    };
+
+                    return updateProjectActivity(updatedProject);
+                }
+                return project;
+            });
+
+            logger.success('Component completion set');
+
+            return {
+                ...state,
+                projects: updatedProjects,
+                currentProject: state.currentProject?.id === projectId
+                    ? updatedProjects.find(p => p.id === projectId)
+                    : state.currentProject
             };
         }
 

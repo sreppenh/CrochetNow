@@ -13,6 +13,7 @@ function CrochetMode() {
     const { state, dispatch } = useProjects();
 
     const [showAbbreviationHelp, setShowAbbreviationHelp] = useState(null);
+    const [showContinueDialog, setShowContinueDialog] = useState(false);
     const [touchStart, setTouchStart] = useState(null);
     const [touchEnd, setTouchEnd] = useState(null);
 
@@ -88,10 +89,37 @@ function CrochetMode() {
             // Move to next round
             updateCurrentRound(currentRoundIndex + 1);
         } else {
-            // Last round completed - go back to ProjectDetail (list of all components)
-            alert('Component complete! 🎉');
-            navigate(`/project/${projectId}`);
+            // Last round completed - increment component completion
+            dispatch({
+                type: ACTIONS.INCREMENT_COMPONENT_COMPLETION,
+                payload: {
+                    projectId,
+                    componentId
+                }
+            });
+
+            // Check if there are more to make
+            if (component.completedCount + 1 < component.quantity) {
+                // More to make - show continue dialog
+                setShowContinueDialog(true);
+            } else {
+                // All done!
+                alert(`All ${component.quantity} ${component.name}${component.quantity > 1 ? 's' : ''} complete! 🎉`);
+                navigate(`/project/${projectId}`);
+            }
         }
+    };
+
+    const handleContinueNext = () => {
+        // Reset to first round and close dialog
+        updateCurrentRound(0);
+        setShowContinueDialog(false);
+    };
+
+    const handleStopCrocheting = () => {
+        // Go back to project view
+        setShowContinueDialog(false);
+        navigate(`/project/${projectId}`);
     };
 
     const handleUndo = () => {
@@ -338,6 +366,35 @@ function CrochetMode() {
                         <p className={styles['help-description']}>
                             {getAbbreviationDescription(showAbbreviationHelp.abbr)}
                         </p>
+                    </div>
+                </div>
+            )}
+
+            {/* Continue Dialog */}
+            {showContinueDialog && (
+                <div className={styles['help-modal-backdrop']}>
+                    <div className={styles['help-modal']}>
+                        <h3 className={styles['help-title']}>
+                            {component.name} #{component.completedCount + 1} Complete! 🎉
+                        </h3>
+                        <p className={styles['help-description']} style={{ marginTop: '1rem', marginBottom: '1.5rem' }}>
+                            You've completed {component.completedCount + 1} of {component.quantity}. 
+                            {component.completedCount + 1 < component.quantity && ' Ready to start the next one?'}
+                        </p>
+                        <div style={{ display: 'flex', gap: '0.75rem' }}>
+                            <button
+                                className={styles['continue-button-secondary']}
+                                onClick={handleStopCrocheting}
+                            >
+                                Stop for Now
+                            </button>
+                            <button
+                                className={styles['continue-button-primary']}
+                                onClick={handleContinueNext}
+                            >
+                                Continue →
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
