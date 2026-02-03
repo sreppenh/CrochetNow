@@ -85,9 +85,11 @@ const escapeRegex = (string) => {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 };
 
-export default {
+const textTransformUtils = {
     shouldShowFullText,
     transformToFullText,
     transformToAbbreviations,
     displayText
 };
+
+export default textTransformUtils;

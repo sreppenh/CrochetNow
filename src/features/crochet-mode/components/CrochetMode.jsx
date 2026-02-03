@@ -5,6 +5,7 @@ import { useProjects } from '../../projects/context/ProjectsContext';
 import { ACTIONS } from '../../projects/hooks/projectsReducer';
 import { YARN_COLORS } from '../../../shared/data/yarnColors';
 import { CROCHET_ABBREVIATIONS } from '../../../shared/data/crochetAbbreviations';
+import { displayText } from '../../../shared/utils/textTransform';
 import styles from './CrochetMode.module.css';
 
 function CrochetMode() {
@@ -168,61 +169,66 @@ function CrochetMode() {
 
     const showColorAndHook = currentRoundIndex === 0 || hasColorChange || hasHookChange;
 
-    // Render instruction with tappable abbreviations (handles multi-word abbrs and punctuation)
+    // Render instruction with tappable abbreviations (handles multi-word abbrs, full text, and punctuation)
     const renderInstruction = (instruction) => {
+        // First, transform the instruction for display
+        const displayInstruction = displayText(instruction);
+        
         const result = [];
-        let remaining = instruction;
+        let remaining = displayInstruction;
         let keyIndex = 0;
 
         // Sort abbreviations by length (longest first) so "sl st" is checked before "sl" or "st"
         const sortedAbbreviations = [...CROCHET_ABBREVIATIONS].sort((a, b) => 
-            b.abbr.length - a.abbr.length
+            Math.max(b.abbr.length, b.full.length) - Math.max(a.abbr.length, a.full.length)
         );
 
         while (remaining.length > 0) {
             let matched = false;
 
-            // Try to match each abbreviation at the current position
+            // Try to match each abbreviation (both abbr and full text) at the current position
             for (const abbr of sortedAbbreviations) {
-                const abbrPattern = abbr.abbr.toLowerCase();
-                const remainingLower = remaining.toLowerCase();
-
-                // Check if abbreviation matches at current position
-                // Must be at start of string OR preceded by space/punctuation
-                // Must be followed by space, punctuation, or end of string
-                const matchIndex = remainingLower.indexOf(abbrPattern);
+                // Try matching both abbreviation and full text
+                const patterns = [abbr.abbr, abbr.full];
                 
-                if (matchIndex === 0) {
-                    const charAfter = remaining.charAt(abbrPattern.length);
+                for (const pattern of patterns) {
+                    const patternLower = pattern.toLowerCase();
+                    const remainingLower = remaining.toLowerCase();
+
+                    // Check if pattern matches at current position
+                    const matchIndex = remainingLower.indexOf(patternLower);
                     
-                    // Check word boundary before (must be at start of remaining string)
-                    const isStartBoundary = matchIndex === 0;
-                    
-                    // Check word boundary after (end, space, or punctuation, but NOT a letter)
-                    const isEndBoundary = !charAfter || /[\s,()x]/.test(charAfter);
-                    
-                    if (isStartBoundary && isEndBoundary) {
-                        // Extract the actual text (preserving case)
-                        const matchedText = remaining.substring(0, abbrPattern.length);
+                    if (matchIndex === 0) {
+                        const charAfter = remaining.charAt(pattern.length);
                         
-                        result.push(
-                            <span
-                                key={keyIndex++}
-                                className={styles['tappable-abbr']}
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    setShowAbbreviationHelp(abbr);
-                                }}
-                            >
-                                {matchedText}
-                            </span>
-                        );
+                        // Check word boundary after (end, space, or punctuation, but NOT a letter)
+                        const isEndBoundary = !charAfter || /[\s,()x]/.test(charAfter);
                         
-                        remaining = remaining.substring(abbrPattern.length);
-                        matched = true;
-                        break;
+                        if (isEndBoundary) {
+                            // Extract the actual text (preserving case)
+                            const matchedText = remaining.substring(0, pattern.length);
+                            
+                            result.push(
+                                <span
+                                    key={keyIndex++}
+                                    className={styles['tappable-abbr']}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setShowAbbreviationHelp(abbr);
+                                    }}
+                                >
+                                    {matchedText}
+                                </span>
+                            );
+                            
+                            remaining = remaining.substring(pattern.length);
+                            matched = true;
+                            break;
+                        }
                     }
                 }
+                
+                if (matched) break;
             }
 
             if (!matched) {
