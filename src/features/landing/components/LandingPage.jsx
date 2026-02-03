@@ -19,7 +19,7 @@ function LandingPage() {
             return;
         }
 
-        // Navigate directly to crochet mode at the exact round they were on
+        // Navigate to crochet mode for the last worked component
         navigate(`/project/${resumeData.projectId}/component/${resumeData.componentId}/crochet`);
     };
 

@@ -188,14 +188,21 @@ function CrochetMode() {
                 const remainingLower = remaining.toLowerCase();
 
                 // Check if abbreviation matches at current position
+                // Must be at start of string OR preceded by space/punctuation
                 // Must be followed by space, punctuation, or end of string
                 const matchIndex = remainingLower.indexOf(abbrPattern);
                 
                 if (matchIndex === 0) {
-                    const afterAbbr = remaining.charAt(abbrPattern.length);
-                    const isWordBoundary = !afterAbbr || /[\s,()x]/.test(afterAbbr);
+                    const charBefore = remaining.charAt(-1); // Will be empty for start
+                    const charAfter = remaining.charAt(abbrPattern.length);
                     
-                    if (isWordBoundary) {
+                    // Check word boundary before (start of string, space, or punctuation)
+                    const isStartBoundary = matchIndex === 0;
+                    
+                    // Check word boundary after (end, space, or punctuation, but NOT a letter)
+                    const isEndBoundary = !charAfter || /[\s,()x]/.test(charAfter);
+                    
+                    if (isStartBoundary && isEndBoundary) {
                         // Extract the actual text (preserving case)
                         const matchedText = remaining.substring(0, abbrPattern.length);
                         

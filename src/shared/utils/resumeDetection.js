@@ -1,69 +1,56 @@
 /**
- * Resume Detection Utility
- * Finds the most recently worked on project/component for Continue functionality
- * Based on IntelliKnit's resumeDetection.js
+ * Resume Detection for CrochetNow
+ * Finds the most recently worked on project/component based on lastActivityAt
  */
 
 export const getResumeData = () => {
+    const storage = localStorage.getItem('crochetgenius_state');
+    
+    if (!storage) {
+        return { hasActiveProject: false };
+    }
+
     try {
-        // Get all projects from localStorage
-        const projectsData = localStorage.getItem('crochetgenius-projects');
-        if (!projectsData) {
+        const state = JSON.parse(storage);
+        const projects = state.projects || [];
+
+        if (projects.length === 0) {
             return { hasActiveProject: false };
         }
 
-        const projects = JSON.parse(projectsData);
-        
-        if (!projects || projects.length === 0) {
-            return { hasActiveProject: false };
-        }
-
-        // Find project with most recent lastActivityAt timestamp
-        let mostRecentActivity = null;
+        // Find project with most recent lastActivityAt
+        let mostRecentProject = null;
+        let mostRecentComponent = null;
         let mostRecentTimestamp = 0;
 
         projects.forEach(project => {
-            const projectTimestamp = project.lastActivityAt ? new Date(project.lastActivityAt).getTime() : 0;
+            if (project.lastActivityAt) {
+                const timestamp = new Date(project.lastActivityAt).getTime();
+                
+                if (timestamp > mostRecentTimestamp) {
+                    mostRecentTimestamp = timestamp;
+                    mostRecentProject = project;
 
-            if (projectTimestamp > mostRecentTimestamp) {
-                mostRecentTimestamp = projectTimestamp;
-
-                // Find component with currentRound set (the one being worked on)
-                const activeComponent = project.components?.find(c => 
-                    c.currentRound !== undefined && c.currentRound >= 0 && c.rounds && c.rounds.length > 0
-                );
-
-                if (activeComponent) {
-                    mostRecentActivity = {
-                        projectId: project.id,
-                        componentId: activeComponent.id,
-                        currentRound: activeComponent.currentRound
-                    };
-                } else if (project.components && project.components.length > 0) {
-                    // Fallback: if no currentRound set, use first component with rounds
-                    const firstComponentWithRounds = project.components.find(c => c.rounds && c.rounds.length > 0);
-                    if (firstComponentWithRounds) {
-                        mostRecentActivity = {
-                            projectId: project.id,
-                            componentId: firstComponentWithRounds.id,
-                            currentRound: firstComponentWithRounds.currentRound ?? 0
-                        };
-                    }
+                    // Find the component with currentRound > 0 (or first component)
+                    mostRecentComponent = project.components.find(c => c.currentRound > 0) 
+                        || project.components[0];
                 }
             }
         });
 
-        if (!mostRecentActivity) {
+        if (!mostRecentProject || !mostRecentComponent) {
             return { hasActiveProject: false };
         }
 
         return {
             hasActiveProject: true,
-            ...mostRecentActivity,
+            projectId: mostRecentProject.id,
+            componentId: mostRecentComponent.id,
+            currentRound: mostRecentComponent.currentRound || 0,
             lastActivity: mostRecentTimestamp
         };
     } catch (error) {
-        console.error('Error in getResumeData:', error);
+        console.error('Error getting resume data:', error);
         return { hasActiveProject: false };
     }
 };
