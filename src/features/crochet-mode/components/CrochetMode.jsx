@@ -193,10 +193,9 @@ function CrochetMode() {
                 const matchIndex = remainingLower.indexOf(abbrPattern);
                 
                 if (matchIndex === 0) {
-                    const charBefore = remaining.charAt(-1); // Will be empty for start
                     const charAfter = remaining.charAt(abbrPattern.length);
                     
-                    // Check word boundary before (start of string, space, or punctuation)
+                    // Check word boundary before (must be at start of remaining string)
                     const isStartBoundary = matchIndex === 0;
                     
                     // Check word boundary after (end, space, or punctuation, but NOT a letter)
