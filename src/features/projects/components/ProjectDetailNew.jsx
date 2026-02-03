@@ -16,7 +16,7 @@ function ProjectDetail() {
     const [showEditProject, setShowEditProject] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
     const [showCompletionModal, setShowCompletionModal] = useState(false);
-    const [selectedComponent, setSelectedComponent] = useState(null);
+    const [selectedComponentId, setSelectedComponentId] = useState(null);
 
     // Find the current project
     const project = state.projects.find(p => p.id === projectId);
@@ -27,6 +27,11 @@ function ProjectDetail() {
         return null;
     }
 
+    // Get fresh component data from state (updates live when +/- clicked)
+    const selectedComponent = selectedComponentId 
+        ? project.components.find(c => c.id === selectedComponentId)
+        : null;
+
     const handleComponentClick = (componentId) => {
         // Navigate directly to crochet mode
         navigate(`/project/${projectId}/component/${componentId}/crochet`);
@@ -34,31 +39,37 @@ function ProjectDetail() {
 
     const handleCompletionBadgeClick = (e, component) => {
         e.stopPropagation(); // Don't trigger component click
-        setSelectedComponent(component);
+        setSelectedComponentId(component.id);
         setShowCompletionModal(true);
     };
 
     const handleIncrement = () => {
-        if (selectedComponent && selectedComponent.completedCount < selectedComponent.quantity) {
-            dispatch({
-                type: ACTIONS.INCREMENT_COMPONENT_COMPLETION,
-                payload: {
-                    projectId,
-                    componentId: selectedComponent.id
-                }
-            });
+        if (selectedComponentId) {
+            const component = project.components.find(c => c.id === selectedComponentId);
+            if (component && component.completedCount < component.quantity) {
+                dispatch({
+                    type: ACTIONS.INCREMENT_COMPONENT_COMPLETION,
+                    payload: {
+                        projectId,
+                        componentId: selectedComponentId
+                    }
+                });
+            }
         }
     };
 
     const handleDecrement = () => {
-        if (selectedComponent && selectedComponent.completedCount > 0) {
-            dispatch({
-                type: ACTIONS.DECREMENT_COMPONENT_COMPLETION,
-                payload: {
-                    projectId,
-                    componentId: selectedComponent.id
-                }
-            });
+        if (selectedComponentId) {
+            const component = project.components.find(c => c.id === selectedComponentId);
+            if (component && component.completedCount > 0) {
+                dispatch({
+                    type: ACTIONS.DECREMENT_COMPONENT_COMPLETION,
+                    payload: {
+                        projectId,
+                        componentId: selectedComponentId
+                    }
+                });
+            }
         }
     };
 
