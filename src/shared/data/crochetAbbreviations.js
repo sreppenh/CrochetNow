@@ -17,7 +17,7 @@ export const CROCHET_ABBREVIATIONS = [
     { abbr: 'inc', full: 'increase', category: 'modify', stitchChange: +1 },
     { abbr: 'dec', full: 'decrease', category: 'modify', stitchChange: -1 },
     { abbr: 'invdec', full: 'invisible decrease', category: 'modify', stitchChange: -1 },
-    
+
     // ===== SPECIAL TECHNIQUES =====
     { abbr: 'MR', full: 'magic ring', category: 'start' },
     { abbr: 'FLO', full: 'front loop only', category: 'modifier' },
@@ -26,7 +26,7 @@ export const CROCHET_ABBREVIATIONS = [
     { abbr: 'FL', full: 'front loop', category: 'modifier' },
     { abbr: 'inv fo', full: 'invisible fasten off', category: 'finish' },
     { abbr: 'change color', full: 'change color', category: 'colorwork' },
-    
+
     // ===== COMMON PHRASES =====
     { abbr: 'st', full: 'stitch', category: 'phrase' },
     { abbr: 'sts', full: 'stitches', category: 'phrase' },
@@ -35,9 +35,6 @@ export const CROCHET_ABBREVIATIONS = [
     { abbr: 'tog', full: 'together', category: 'phrase' },
     { abbr: 'in', full: 'in', category: 'phrase' },
     { abbr: 'each', full: 'each', category: 'phrase' },
-
-    // ===== REPEAT INDICATORS =====
-    { abbr: 'x', full: 'times', category: 'repeat' }
 ];
 
 /**
@@ -60,7 +57,7 @@ export const getStitchChange = (abbr) => {
  */
 export const findAbbreviation = (text) => {
     const lowerText = text.toLowerCase();
-    return CROCHET_ABBREVIATIONS.find(a => 
+    return CROCHET_ABBREVIATIONS.find(a =>
         a.abbr.toLowerCase() === lowerText || a.full.toLowerCase() === lowerText
     );
 };
