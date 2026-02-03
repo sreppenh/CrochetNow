@@ -354,3 +354,187 @@ textarea.form-input {
         font-size: 0.8125rem;
     }
 }
+/* Number Editor Styles */
+
+/* Instruction Preview with Clickable Numbers */
+.instruction-preview {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    background: var(--warm-50);
+    border: 2px solid var(--warm-200);
+    border-radius: 8px;
+}
+
+.preview-label {
+    font-size: 0.75rem;
+    color: var(--mint-700);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.instruction-display {
+    font-family: 'Monaco', 'Courier New', monospace;
+    font-size: 0.9375rem;
+    color: var(--warm-800);
+    line-height: 1.6;
+    word-wrap: break-word;
+}
+
+/* Clickable Numbers */
+.clickable-number {
+    color: var(--mint-600);
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0.125rem 0.25rem;
+    border-radius: 4px;
+    transition: all 0.15s;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+}
+
+.clickable-number:hover {
+    background: var(--mint-100);
+    color: var(--mint-700);
+}
+
+.clickable-number:active {
+    transform: scale(0.95);
+}
+
+/* Number Editor Popover */
+.number-editor-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 1rem;
+}
+
+.number-editor-popover {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2);
+    min-width: 280px;
+    max-width: 90vw;
+}
+
+.popover-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--warm-800);
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+/* Number Editor Controls */
+.number-editor-controls {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.number-btn-minus,
+.number-btn-plus {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid var(--mint-500);
+    background: white;
+    color: var(--mint-700);
+    font-size: 1.75rem;
+    font-weight: 300;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.number-btn-minus:hover,
+.number-btn-plus:hover {
+    background: var(--mint-50);
+    border-color: var(--mint-600);
+    transform: scale(1.05);
+}
+
+.number-btn-minus:active,
+.number-btn-plus:active {
+    transform: scale(0.95);
+}
+
+.number-editor-input {
+    width: 80px;
+    height: 50px;
+    border: 2px solid var(--mint-500);
+    border-radius: 10px;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--mint-700);
+    background: var(--mint-50);
+    flex-shrink: 0;
+}
+
+.number-editor-input:focus {
+    outline: none;
+    border-color: var(--mint-600);
+    background: white;
+}
+
+/* Done Button */
+.number-editor-done {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--mint-500);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.number-editor-done:hover {
+    background: var(--mint-600);
+}
+
+.number-editor-done:active {
+    transform: scale(0.98);
+}
+
+/* Mobile Optimization */
+@media (max-width: 640px) {
+    .number-editor-popover {
+        padding: 1.25rem;
+        min-width: 260px;
+    }
+
+    .number-btn-minus,
+    .number-btn-plus {
+        width: 48px;
+        height: 48px;
+        font-size: 1.5rem;
+    }
+
+    .number-editor-input {
+        width: 70px;
+        height: 48px;
+        font-size: 1.25rem;
+    }
+
+    .instruction-display {
+        font-size: 0.875rem;
+    }
+}

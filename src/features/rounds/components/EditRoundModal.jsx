@@ -18,7 +18,9 @@ function EditRoundModal({ isOpen, onClose, projectId, componentId, round }) {
     const [stitchCount, setStitchCount] = useState(round?.stitchCount?.toString() || '');
     const [error, setError] = useState('');
     const [showFullText, setShowFullText] = useState(false);
+    const [editingNumber, setEditingNumber] = useState(null); // { value, index, position }
     const textareaRef = useRef(null);
+    const popoverRef = useRef(null);
 
     // Update instruction and stitch count when round changes
     useEffect(() => {
@@ -41,6 +43,20 @@ function EditRoundModal({ isOpen, onClose, projectId, componentId, round }) {
             setShowFullText(shouldShowFullText());
         }
     }, [isOpen]);
+
+    // Close popover when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (popoverRef.current && !popoverRef.current.contains(e.target)) {
+                setEditingNumber(null);
+            }
+        };
+
+        if (editingNumber) {
+            document.addEventListener('mousedown', handleClickOutside);
+            return () => document.removeEventListener('mousedown', handleClickOutside);
+        }
+    }, [editingNumber]);
 
     // Get button label (abbr or full text based on setting)
     const getButtonLabel = (abbr) => {
@@ -86,6 +102,88 @@ function EditRoundModal({ isOpen, onClose, projectId, componentId, round }) {
         }, 0);
     };
 
+    // Handle clicking a number to edit it
+    const handleNumberClick = (numberValue, startIndex) => {
+        setEditingNumber({
+            value: numberValue,
+            index: startIndex,
+            length: numberValue.length
+        });
+    };
+
+    // Update the number in the instruction
+    const handleNumberChange = (newValue) => {
+        if (!editingNumber) return;
+
+        const { index, length } = editingNumber;
+        const before = instruction.substring(0, index);
+        const after = instruction.substring(index + length);
+        const newInstruction = before + newValue + after;
+
+        setInstruction(newInstruction);
+        setEditingNumber({
+            value: newValue,
+            index: index,
+            length: newValue.length
+        });
+    };
+
+    // Close the number editor
+    const handleCloseNumberEditor = () => {
+        setEditingNumber(null);
+    };
+
+    // Render instruction with clickable numbers
+    const renderInstructionWithNumbers = (text) => {
+        if (!text) return null;
+
+        const parts = [];
+        let lastIndex = 0;
+        let keyIndex = 0;
+
+        // Find all numbers in the text
+        const numberRegex = /\d+/g;
+        let match;
+
+        while ((match = numberRegex.exec(text)) !== null) {
+            const numberValue = match[0];
+            const startIndex = match.index;
+
+            // Add text before the number
+            if (startIndex > lastIndex) {
+                parts.push(
+                    <span key={`text-${keyIndex++}`}>
+                        {text.substring(lastIndex, startIndex)}
+                    </span>
+                );
+            }
+
+            // Add the clickable number
+            parts.push(
+                <span
+                    key={`number-${keyIndex++}`}
+                    className={styles['clickable-number']}
+                    onClick={() => handleNumberClick(numberValue, startIndex)}
+                >
+                    {numberValue}
+                </span>
+            );
+
+            lastIndex = startIndex + numberValue.length;
+        }
+
+        // Add remaining text
+        if (lastIndex < text.length) {
+            parts.push(
+                <span key={`text-${keyIndex++}`}>
+                    {text.substring(lastIndex)}
+                </span>
+            );
+        }
+
+        return parts.length > 0 ? parts : text;
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -129,6 +227,7 @@ function EditRoundModal({ isOpen, onClose, projectId, componentId, round }) {
         >
             <form onSubmit={handleSubmit}>
                 <div className={styles['form-group']}>
+                    <label className={styles['form-label']}>Instruction</label>
                     <textarea
                         ref={textareaRef}
                         id="instruction"
@@ -141,7 +240,67 @@ function EditRoundModal({ isOpen, onClose, projectId, componentId, round }) {
                             setError('');
                         }}
                     />
+                    
+                    {/* Display instruction with clickable numbers */}
+                    {instruction && (
+                        <div className={styles['instruction-preview']}>
+                            <div className={styles['preview-label']}>
+                                💡 Tip: Click any number to edit it
+                            </div>
+                            <div className={styles['instruction-display']}>
+                                {renderInstructionWithNumbers(instruction)}
+                            </div>
+                        </div>
+                    )}
                 </div>
+
+                {/* Number Editor Popover */}
+                {editingNumber && (
+                    <div className={styles['number-editor-backdrop']}>
+                        <div 
+                            ref={popoverRef}
+                            className={styles['number-editor-popover']}
+                        >
+                            <div className={styles['popover-title']}>Edit Number</div>
+                            <div className={styles['number-editor-controls']}>
+                                <button
+                                    type="button"
+                                    className={styles['number-btn-minus']}
+                                    onClick={() => handleNumberChange(Math.max(0, parseInt(editingNumber.value || 0) - 1).toString())}
+                                >
+                                    −
+                                </button>
+                                <input
+                                    type="number"
+                                    className={styles['number-editor-input']}
+                                    value={editingNumber.value}
+                                    onChange={(e) => handleNumberChange(e.target.value)}
+                                    autoFocus
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === 'Escape') {
+                                            e.preventDefault();
+                                            handleCloseNumberEditor();
+                                        }
+                                    }}
+                                />
+                                <button
+                                    type="button"
+                                    className={styles['number-btn-plus']}
+                                    onClick={() => handleNumberChange((parseInt(editingNumber.value || 0) + 1).toString())}
+                                >
+                                    +
+                                </button>
+                            </div>
+                            <button
+                                type="button"
+                                className={styles['number-editor-done']}
+                                onClick={handleCloseNumberEditor}
+                            >
+                                ✓ Done
+                            </button>
+                        </div>
+                    </div>
+                )}
 
                 {/* Abbreviation Bar - word cloud style */}
                 <div className={styles['abbreviation-bar']}>
