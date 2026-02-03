@@ -106,15 +106,14 @@ function LandingPage() {
                         <div className={styles.cardSubtitle}>See all patterns</div>
                     </button>
 
-                    {/* Future Feature - Bottom Right (Placeholder) */}
+                    {/* Settings - Bottom Right */}
                     <button
+                        onClick={() => navigate('/settings')}
                         className={styles.actionCard}
-                        disabled
-                        style={{ opacity: 0.3, cursor: 'not-allowed' }}
                     >
-                        <div className={styles.cardIcon}>📖</div>
-                        <div className={styles.cardTitle}>Reference</div>
-                        <div className={styles.cardSubtitle}>Coming soon</div>
+                        <div className={styles.cardIcon}>⚙️</div>
+                        <div className={styles.cardTitle}>Settings</div>
+                        <div className={styles.cardSubtitle}>Customize your experience</div>
                     </button>
                 </div>
             </div>

@@ -6,6 +6,7 @@ import ProjectsList from './features/projects/components/ProjectsList';
 import ProjectDetail from './features/projects/components/ProjectDetailNew';
 import ComponentDetail from './features/components/components/ComponentDetail';
 import CrochetMode from './features/crochet-mode/components/CrochetMode';
+import Settings from './features/settings/components/Settings';
 import WakeLockBanner from './shared/components/WakeLockBanner';
 import './styles/index.css';
 
@@ -110,6 +111,7 @@ function App() {
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/projects" element={<ProjectsList />} />
+            <Route path="/settings" element={<Settings />} />
             <Route path="/project/:projectId" element={<ProjectDetail />} />
             <Route path="/project/:projectId/component/:componentId" element={<ComponentDetail />} />
             <Route path="/project/:projectId/component/:componentId/crochet" element={<CrochetMode />} />

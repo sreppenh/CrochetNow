@@ -1,0 +1,199 @@
+/* Settings Page */
+.settings {
+    min-height: 100vh;
+    background: var(--warm-50);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+.header {
+    background: linear-gradient(135deg, var(--coral-500), var(--coral-600));
+    color: white;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.backButton {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.backButton:active {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+    flex: 1;
+    text-align: center;
+}
+
+.spacer {
+    width: 44px;
+}
+
+/* Content */
+.content {
+    flex: 1;
+    padding: 1.5rem;
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.section {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1.5rem;
+}
+
+.sectionTitle {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--warm-800);
+    margin: 0 0 1.5rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.875rem;
+    color: var(--warm-600);
+}
+
+/* Setting Item */
+.settingItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.settingInfo {
+    flex: 1;
+}
+
+.settingLabel {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--warm-800);
+    margin-bottom: 0.25rem;
+}
+
+.settingDescription {
+    font-size: 0.875rem;
+    color: var(--warm-600);
+    line-height: 1.4;
+}
+
+/* Toggle Switch */
+.toggle {
+    position: relative;
+    display: inline-block;
+    width: 52px;
+    height: 28px;
+    flex-shrink: 0;
+}
+
+.toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--warm-300);
+    transition: 0.3s;
+    border-radius: 28px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle input:checked + .slider {
+    background-color: var(--mint-500);
+}
+
+.toggle input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+/* Example Display */
+.example {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--warm-200);
+}
+
+.exampleLabel {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--warm-600);
+    margin-bottom: 0.5rem;
+}
+
+.exampleText {
+    font-family: 'Monaco', 'Courier New', monospace;
+    font-size: 0.9375rem;
+    color: var(--coral-600);
+    background: var(--coral-50);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    border: 2px solid var(--coral-200);
+}
+
+/* Footer */
+.footer {
+    padding: 1.5rem;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.footerText {
+    font-size: 0.875rem;
+    color: var(--warm-500);
+    margin: 0;
+}
+
+/* Mobile Optimization */
+@media (max-width: 640px) {
+    .content {
+        padding: 1.25rem;
+    }
+
+    .section {
+        padding: 1.25rem;
+    }
+}
