@@ -2,43 +2,21 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useProjects } from '../../projects/context/ProjectsContext';
 import { ACTIONS } from '../../projects/hooks/projectsReducer';
 import { Modal, Button } from '../../../shared/components';
+import { CROCHET_ABBREVIATIONS } from '../../../shared/data/crochetAbbreviations';
+import { shouldShowFullText } from '../../../shared/utils/textTransform';
 import styles from './RoundEntryModal.module.css';
 
-const COMMON_ABBREVIATIONS = [
-    { abbr: 'sc', label: 'sc' },
-    { abbr: 'hdc', label: 'hdc' },
-    { abbr: 'dc', label: 'dc' },
-    { abbr: 'ch', label: 'ch' },
-    { abbr: 'inc', label: 'inc' },
-    { abbr: 'dec', label: 'dec' },
-    { abbr: 'MR', label: 'MR' },
-    { abbr: 'st', label: 'st' }
-];
-
-const ADVANCED_ABBREVIATIONS = [
-    { abbr: 'sl st', label: 'sl st' },
-    { abbr: 'tr', label: 'tr' },
-    { abbr: 'invdec', label: 'invdec' },
-    { abbr: 'inv fo', label: 'inv fo' },
-    { abbr: 'change color', label: 'change color' },
-    { abbr: 'FLO', label: 'FLO' },
-    { abbr: 'BLO', label: 'BLO' },
-    { abbr: 'sts', label: 'sts' },
-    { abbr: 'in', label: 'in' },
-    { abbr: 'each', label: 'each' }
-];
-
-const PUNCTUATION = [
-    { abbr: '(', label: '(' },
-    { abbr: ')', label: ')' },
-    { abbr: ',', label: ',' },
-    { abbr: ' x ', label: 'x' }
+// Streamlined button list (removed: tr, in, each, punctuation)
+const BUTTON_ABBREVIATIONS = [
+    'sc', 'hdc', 'dc', 'ch', 'inc', 'dec', 'MR', 'st',
+    'sl st', 'invdec', 'inv fo', 'change color', 'FLO', 'BLO', 'sts'
 ];
 
 function RoundEntryModal({ isOpen, onClose, projectId, componentId }) {
     const { state, dispatch } = useProjects();
     const [instruction, setInstruction] = useState('');
     const [error, setError] = useState('');
+    const [showFullText, setShowFullText] = useState(false);
     const textareaRef = useRef(null);
 
     // Find component to get previous stitch count
@@ -58,11 +36,33 @@ function RoundEntryModal({ isOpen, onClose, projectId, componentId }) {
         }
     }, [isOpen, previousCount]);
 
+    // Check setting when modal opens
+    useEffect(() => {
+        if (isOpen) {
+            setShowFullText(shouldShowFullText());
+        }
+    }, [isOpen]);
+
+    // Get button label (abbr or full text based on setting)
+    const getButtonLabel = (abbr) => {
+        const found = CROCHET_ABBREVIATIONS.find(a => a.abbr === abbr);
+        if (!found) return abbr;
+        return showFullText ? found.full : found.abbr;
+    };
+
+    // Get text to insert (always insert what matches the current display mode)
+    const getInsertText = (abbr) => {
+        const found = CROCHET_ABBREVIATIONS.find(a => a.abbr === abbr);
+        if (!found) return abbr;
+        return showFullText ? found.full : found.abbr;
+    };
+
     // Insert text at cursor position
-    const insertText = (text) => {
+    const insertText = (abbr) => {
         const textarea = textareaRef.current;
         if (!textarea) return;
 
+        const text = getInsertText(abbr);
         const start = textarea.selectionStart;
         const end = textarea.selectionEnd;
         const currentValue = instruction;
@@ -71,9 +71,8 @@ function RoundEntryModal({ isOpen, onClose, projectId, componentId }) {
         const needsSpaceBefore = start > 0 && currentValue[start - 1] !== ' ' && currentValue[start - 1] !== '(';
         const prefix = needsSpaceBefore ? ' ' : '';
 
-        // Add space after if needed (except for punctuation)
-        const needsSpaceAfter = !['(', ')', ','].includes(text);
-        const suffix = needsSpaceAfter ? ' ' : '';
+        // Add space after
+        const suffix = ' ';
 
         const newValue = currentValue.substring(0, start) + prefix + text + suffix + currentValue.substring(end);
         const newCursorPos = start + prefix.length + text.length + suffix.length;
@@ -154,47 +153,17 @@ function RoundEntryModal({ isOpen, onClose, projectId, componentId }) {
                     />
                 </div>
 
-                {/* Abbreviation Bar - moved directly under textarea */}
+                {/* Abbreviation Bar - word cloud style */}
                 <div className={styles['abbreviation-bar']}>
-                    
-                    {/* Common Abbreviations */}
-                    <div className={styles['abbreviation-buttons']}>
-                        {COMMON_ABBREVIATIONS.map(({ abbr, label }) => (
+                    <div className={styles['abbreviation-buttons-cloud']}>
+                        {BUTTON_ABBREVIATIONS.map((abbr) => (
                             <button
                                 key={abbr}
                                 type="button"
-                                className={styles['abbr-btn']}
+                                className={styles['abbr-btn-cloud']}
                                 onClick={() => insertText(abbr)}
                             >
-                                {label}
-                            </button>
-                        ))}
-                    </div>
-                    
-                    {/* Advanced Abbreviations */}
-                    <div className={styles['abbreviation-buttons']}>
-                        {ADVANCED_ABBREVIATIONS.map(({ abbr, label }) => (
-                            <button
-                                key={abbr}
-                                type="button"
-                                className={styles['abbr-btn']}
-                                onClick={() => insertText(abbr)}
-                            >
-                                {label}
-                            </button>
-                        ))}
-                    </div>
-                    
-                    {/* Punctuation */}
-                    <div className={styles['punctuation-buttons']}>
-                        {PUNCTUATION.map(({ abbr, label }) => (
-                            <button
-                                key={abbr}
-                                type="button"
-                                className={styles['punct-btn']}
-                                onClick={() => insertText(abbr)}
-                            >
-                                {label}
+                                {getButtonLabel(abbr)}
                             </button>
                         ))}
                     </div>

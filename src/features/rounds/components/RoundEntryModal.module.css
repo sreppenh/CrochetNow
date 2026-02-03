@@ -307,3 +307,50 @@ textarea.form-input {
         font-size: 1.125rem;
     }
 }
+/* Word Cloud Button Layout */
+.abbreviation-buttons-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.abbr-btn-cloud {
+    background: white;
+    border: 2px solid var(--coral-300);
+    color: var(--coral-700);
+    padding: 0.5rem 0.75rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+    font-family: 'Monaco', 'Courier New', monospace;
+    white-space: nowrap;
+    line-height: 1.2;
+    text-align: center;
+}
+
+.abbr-btn-cloud:hover {
+    background: var(--coral-50);
+    border-color: var(--coral-500);
+    transform: translateY(-1px);
+}
+
+.abbr-btn-cloud:active {
+    transform: scale(0.95);
+}
+
+/* Mobile Optimization for Word Cloud */
+@media (max-width: 640px) {
+    .abbreviation-buttons-cloud {
+        gap: 0.375rem;
+    }
+
+    .abbr-btn-cloud {
+        padding: 0.4rem 0.625rem;
+        font-size: 0.8125rem;
+    }
+}
