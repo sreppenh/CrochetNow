@@ -18,7 +18,8 @@ function EditRoundModal({ isOpen, onClose, projectId, componentId, round }) {
     const [stitchCount, setStitchCount] = useState(round?.stitchCount?.toString() || '');
     const [error, setError] = useState('');
     const [showFullText, setShowFullText] = useState(false);
-    const [editingNumber, setEditingNumber] = useState(null); // { value, index, position }
+    const [editingNumber, setEditingNumber] = useState(null);
+    const [inputMode, setInputMode] = useState('clickable'); // 'clickable' or 'typing'
     const textareaRef = useRef(null);
     const popoverRef = useRef(null);
 
@@ -30,12 +31,19 @@ function EditRoundModal({ isOpen, onClose, projectId, componentId, round }) {
         }
     }, [round]);
 
-    // Auto-focus textarea when modal opens
+    // Reset to clickable mode when modal opens
     useEffect(() => {
-        if (isOpen && textareaRef.current) {
-            textareaRef.current.focus();
+        if (isOpen) {
+            setInputMode('clickable');
         }
     }, [isOpen]);
+
+    // Auto-focus textarea when switching to typing mode
+    useEffect(() => {
+        if (inputMode === 'typing' && textareaRef.current) {
+            textareaRef.current.focus();
+        }
+    }, [inputMode]);
 
     // Check setting when modal opens
     useEffect(() => {
@@ -73,10 +81,24 @@ function EditRoundModal({ isOpen, onClose, projectId, componentId, round }) {
     };
 
     const insertText = (abbr) => {
-        const textarea = textareaRef.current;
-        if (!textarea) return;
+        // If in clickable mode, switch to typing mode first
+        if (inputMode === 'clickable') {
+            setInputMode('typing');
+        }
 
+        const textarea = textareaRef.current;
         const text = getInsertText(abbr);
+
+        if (!textarea || inputMode === 'clickable') {
+            // Append to end if we just switched modes (textarea not yet focused)
+            const needsSpaceBefore = instruction.length > 0 && instruction[instruction.length - 1] !== ' ' && instruction[instruction.length - 1] !== '(';
+            const prefix = needsSpaceBefore ? ' ' : '';
+            const suffix = ' ';
+            setInstruction(instruction + prefix + text + suffix);
+            setError('');
+            return;
+        }
+
         const start = textarea.selectionStart;
         const end = textarea.selectionEnd;
         const before = instruction.substring(0, start);
@@ -228,36 +250,68 @@ function EditRoundModal({ isOpen, onClose, projectId, componentId, round }) {
             <form onSubmit={handleSubmit}>
                 <div className={styles['form-group']}>
                     <label className={styles['form-label']}>Instruction</label>
-                    <textarea
-                        ref={textareaRef}
-                        id="instruction"
-                        className={styles['form-input']}
-                        rows={3}
-                        placeholder="e.g., 6 sc in MR or (sc, inc) x 6"
-                        value={instruction}
-                        onChange={(e) => {
-                            setInstruction(e.target.value);
-                            setError('');
-                        }}
-                    />
-                    
-                    {/* Display instruction with clickable numbers */}
-                    {instruction && (
-                        <div className={styles['instruction-preview']}>
-                            <div className={styles['preview-label']}>
-                                💡 Tip: Click any number to edit it
-                            </div>
-                            <div className={styles['instruction-display']}>
-                                {renderInstructionWithNumbers(instruction)}
-                            </div>
-                        </div>
-                    )}
+
+                    {/* Single unified instruction container */}
+                    <div className={styles['instruction-unified']}>
+                        {inputMode === 'clickable' ? (
+                            <>
+                                <div className={styles['instruction-display-unified']}>
+                                    {instruction ? (
+                                        renderInstructionWithNumbers(instruction)
+                                    ) : (
+                                        <span className={styles['instruction-placeholder']}>
+                                            e.g., 6 sc in MR or (sc, inc) x 6
+                                        </span>
+                                    )}
+                                </div>
+                                <div className={styles['instruction-footer']}>
+                                    <span className={styles['instruction-tip']}>
+                                        Tap any number to adjust it
+                                    </span>
+                                    <button
+                                        type="button"
+                                        className={styles['mode-toggle']}
+                                        onClick={() => setInputMode('typing')}
+                                    >
+                                        Switch to typing
+                                    </button>
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <textarea
+                                    ref={textareaRef}
+                                    id="instruction"
+                                    className={styles['form-input-inline']}
+                                    rows={3}
+                                    placeholder="e.g., 6 sc in MR or (sc, inc) x 6"
+                                    value={instruction}
+                                    onChange={(e) => {
+                                        setInstruction(e.target.value);
+                                        setError('');
+                                    }}
+                                />
+                                <div className={styles['instruction-footer']}>
+                                    <span className={styles['instruction-tip']}>
+                                        Type or use abbreviation buttons below
+                                    </span>
+                                    <button
+                                        type="button"
+                                        className={styles['mode-toggle']}
+                                        onClick={() => setInputMode('clickable')}
+                                    >
+                                        Tap numbers to edit
+                                    </button>
+                                </div>
+                            </>
+                        )}
+                    </div>
                 </div>
 
                 {/* Number Editor Popover */}
                 {editingNumber && (
                     <div className={styles['number-editor-backdrop']}>
-                        <div 
+                        <div
                             ref={popoverRef}
                             className={styles['number-editor-popover']}
                         >
