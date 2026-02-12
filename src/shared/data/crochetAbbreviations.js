@@ -34,8 +34,6 @@ export const CROCHET_ABBREVIATIONS = [
     { abbr: 'rep', full: 'repeat', category: 'phrase' },
     { abbr: 'rnd', full: 'round', category: 'phrase' },
     { abbr: 'tog', full: 'together', category: 'phrase' },
-    { abbr: 'in', full: 'in', category: 'phrase' },
-    { abbr: 'each', full: 'each', category: 'phrase' },
 ];
 
 /**
