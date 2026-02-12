@@ -176,6 +176,7 @@ function CrochetMode() {
 
         const result = [];
         let remaining = displayInstruction;
+        let originalPosition = 0;
         let keyIndex = 0;
 
         // Sort abbreviations by length (longest first) so "sl st" is checked before "sl" or "st"
@@ -199,12 +200,16 @@ function CrochetMode() {
                     const matchIndex = remainingLower.indexOf(patternLower);
 
                     if (matchIndex === 0) {
+                        // Check word boundary BEFORE the match
+                        const charBefore = originalPosition > 0 ? displayInstruction.charAt(originalPosition - 1) : '';
+                        const isStartBoundary = !charBefore || /[\s,()x]/.test(charBefore);
+
                         const charAfter = remaining.charAt(pattern.length);
 
                         // Check word boundary after (end, space, or punctuation, but NOT a letter)
                         const isEndBoundary = !charAfter || /[\s,()x]/.test(charAfter);
 
-                        if (isEndBoundary) {
+                        if (isStartBoundary && isEndBoundary) {
                             // Extract the actual text (preserving case)
                             const matchedText = remaining.substring(0, pattern.length);
 
@@ -222,6 +227,7 @@ function CrochetMode() {
                             );
 
                             remaining = remaining.substring(pattern.length);
+                            originalPosition += pattern.length;
                             matched = true;
                             break;
                         }
@@ -235,6 +241,7 @@ function CrochetMode() {
                 // No abbreviation matched, add the next character as plain text
                 result.push(<span key={keyIndex++}>{remaining.charAt(0)}</span>);
                 remaining = remaining.substring(1);
+                originalPosition += 1;
             }
         }
 
