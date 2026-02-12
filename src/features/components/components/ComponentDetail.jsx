@@ -81,16 +81,23 @@ function ComponentDetail() {
     };
 
     const handleCopyRound = (round) => {
-        // Copy the round and append to end with auto-incremented round number
-        const newRoundNumber = component.rounds.length + 1;
+        // Get the previous round's ending stitch count to use as starting point
+        const previousRound = component.rounds[component.rounds.length - 1];
+        const previousEndingStitches = previousRound?.stitchCount || 0;
+
+        // Calculate the stitch change from the original round
+        const originalStitchChange = round.stitchCount - (component.rounds[round.roundNumber - 2]?.stitchCount || 0);
+
+        // Apply that same stitch change to the previous ending stitches
+        const newStitchCount = previousEndingStitches + originalStitchChange;
+
         dispatch({
             type: ACTIONS.ADD_ROUND,
             payload: {
                 projectId,
                 componentId,
                 instruction: round.instruction,
-                stitchCount: round.stitchCount,
-                roundNumber: newRoundNumber
+                stitchCount: Math.max(0, newStitchCount) // Ensure non-negative
             }
         });
     };
@@ -102,7 +109,7 @@ function ComponentDetail() {
 
     return (
         <div className={styles['component-detail']}>
-            <PageHeader 
+            <PageHeader
                 title={component.name}
                 subtitle={`${component.completedCount} of ${component.quantity} completed`}
                 onBack={() => navigate(`/project/${projectId}`)}
@@ -145,7 +152,7 @@ function ComponentDetail() {
                         <div className={styles['info-item']}>
                             <span className={styles['info-label']}>Color:</span>
                             <div className={styles['color-display']}>
-                                <div 
+                                <div
                                     className={styles['color-dot']}
                                     style={{ backgroundColor: getColorHex(component.color) }}
                                 />
@@ -173,8 +180,8 @@ function ComponentDetail() {
                         title="No rounds yet"
                         description="Add your first round to start tracking your pattern!"
                         action={
-                            <Button 
-                                variant="primary" 
+                            <Button
+                                variant="primary"
                                 onClick={() => setShowAddRoundModal(true)}
                             >
                                 + Add Your First Round
@@ -231,23 +238,23 @@ function ComponentDetail() {
 
                         {/* Action Buttons */}
                         <div className={styles['action-section']}>
-                            <Button 
+                            <Button
                                 variant="secondary"
                                 fullWidth
                                 onClick={() => setShowAddRoundModal(true)}
                             >
                                 + Add Round
                             </Button>
-                            
+
                             <div className={styles['exit-buttons']}>
-                                <Button 
+                                <Button
                                     variant="tertiary"
                                     onClick={handleSave}
                                     fullWidth={false}
                                 >
                                     Save
                                 </Button>
-                                <Button 
+                                <Button
                                     variant="primary"
                                     onClick={handleNextComponent}
                                     fullWidth={false}
