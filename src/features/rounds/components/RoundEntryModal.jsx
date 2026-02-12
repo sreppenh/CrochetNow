@@ -8,7 +8,7 @@ import styles from './RoundEntryModal.module.css';
 
 // Streamlined button list (removed: tr, in, each, punctuation)
 const BUTTON_ABBREVIATIONS = [
-    'sc', 'hdc', 'dc', 'ch', 'inc', 'dec', 'MR', 'st',
+    'sc', 'hdc', 'dc', 'ch', 'inc', 'dec', 'sc2tog', 'MR', 'st',
     'sl st', 'invdec', 'inv fo', 'change color', 'FLO', 'BLO', 'sts'
 ];
 
@@ -22,11 +22,11 @@ function RoundEntryModal({ isOpen, onClose, projectId, componentId }) {
     // Find component to get previous stitch count
     const project = state.projects.find(p => p.id === projectId);
     const component = project?.components.find(c => c.id === componentId);
-    const previousCount = component && component.rounds.length > 0 
-        ? component.rounds[component.rounds.length - 1].stitchCount 
+    const previousCount = component && component.rounds.length > 0
+        ? component.rounds[component.rounds.length - 1].stitchCount
         : 0;
     const nextRoundNumber = component ? component.rounds.length + 1 : 1;
-    
+
     const [stitchCount, setStitchCount] = useState(previousCount > 0 ? previousCount.toString() : '');
 
     // Update stitch count when previousCount changes or modal opens

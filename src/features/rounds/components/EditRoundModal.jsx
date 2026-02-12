@@ -8,7 +8,7 @@ import styles from './RoundEntryModal.module.css'; // Reusing the same styles
 
 // Streamlined button list (removed: tr, in, each, punctuation)
 const BUTTON_ABBREVIATIONS = [
-    'sc', 'hdc', 'dc', 'ch', 'inc', 'dec', 'MR', 'st',
+    'sc', 'hdc', 'dc', 'ch', 'inc', 'dec', 'sc2tog', 'MR', 'st',
     'sl st', 'invdec', 'inv fo', 'change color', 'FLO', 'BLO', 'sts'
 ];
 
