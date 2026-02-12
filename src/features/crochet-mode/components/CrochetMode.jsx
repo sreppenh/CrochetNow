@@ -22,7 +22,7 @@ function CrochetMode() {
     const project = state.projects.find(p => p.id === projectId);
     const component = project?.components.find(c => c.id === componentId);
     const rounds = component?.rounds || [];
-    
+
     // Use currentRound from component state (like IntelliKnit's currentStep)
     const currentRoundIndex = component?.currentRound ?? 0;
     const currentRound = rounds[currentRoundIndex];
@@ -173,13 +173,13 @@ function CrochetMode() {
     const renderInstruction = (instruction) => {
         // First, transform the instruction for display
         const displayInstruction = displayText(instruction);
-        
+
         const result = [];
         let remaining = displayInstruction;
         let keyIndex = 0;
 
         // Sort abbreviations by length (longest first) so "sl st" is checked before "sl" or "st"
-        const sortedAbbreviations = [...CROCHET_ABBREVIATIONS].sort((a, b) => 
+        const sortedAbbreviations = [...CROCHET_ABBREVIATIONS].sort((a, b) =>
             Math.max(b.abbr.length, b.full.length) - Math.max(a.abbr.length, a.full.length)
         );
 
@@ -190,24 +190,24 @@ function CrochetMode() {
             for (const abbr of sortedAbbreviations) {
                 // Try matching both abbreviation and full text
                 const patterns = [abbr.abbr, abbr.full];
-                
+
                 for (const pattern of patterns) {
                     const patternLower = pattern.toLowerCase();
                     const remainingLower = remaining.toLowerCase();
 
                     // Check if pattern matches at current position
                     const matchIndex = remainingLower.indexOf(patternLower);
-                    
+
                     if (matchIndex === 0) {
                         const charAfter = remaining.charAt(pattern.length);
-                        
+
                         // Check word boundary after (end, space, or punctuation, but NOT a letter)
                         const isEndBoundary = !charAfter || /[\s,()x]/.test(charAfter);
-                        
+
                         if (isEndBoundary) {
                             // Extract the actual text (preserving case)
                             const matchedText = remaining.substring(0, pattern.length);
-                            
+
                             result.push(
                                 <span
                                     key={keyIndex++}
@@ -220,14 +220,14 @@ function CrochetMode() {
                                     {matchedText}
                                 </span>
                             );
-                            
+
                             remaining = remaining.substring(pattern.length);
                             matched = true;
                             break;
                         }
                     }
                 }
-                
+
                 if (matched) break;
             }
 
@@ -390,7 +390,7 @@ function CrochetMode() {
                             {component.name} #{component.completedCount + 1} Complete! 🎉
                         </h3>
                         <p className={styles['help-description']} style={{ marginTop: '1rem', marginBottom: '1.5rem' }}>
-                            You've completed {component.completedCount + 1} of {component.quantity}. 
+                            You've completed {component.completedCount + 1} of {component.quantity}.
                             {component.completedCount + 1 < component.quantity && ' Ready to start the next one?'}
                         </p>
                         <div style={{ display: 'flex', gap: '0.75rem' }}>
@@ -423,6 +423,7 @@ function getAbbreviationDescription(abbr) {
         'inc': 'Work 2 single crochet stitches in the same stitch.',
         'dec': 'Insert hook in stitch, yarn over and pull through, insert hook in next stitch, yarn over and pull through (3 loops on hook), yarn over and pull through all 3 loops.',
         'invdec': 'Insert hook in front loop of first stitch, then front loop of second stitch, yarn over and pull through both front loops, yarn over and pull through 2 loops.',
+        'sc2tog': 'Insert hook in first stitch, yarn over and pull through (2 loops on hook), insert hook in next stitch, yarn over and pull through (3 loops on hook), yarn over and pull through all 3 loops. This creates one stitch from two stitches.',
         'MR': 'Wrap yarn around fingers to form a ring, insert hook through ring, yarn over and pull through, chain 1, then work stitches into the ring. Pull tail to close ring.',
         'inv fo': 'Insert hook into front loop of next stitch, pull yarn through (2 loops on hook), cut yarn leaving a tail, pull tail through both loops. Weave in end through several stitches to secure.',
         'change color': 'Work last stitch of current color until 2 loops remain on hook, yarn over with new color and pull through both loops to complete the stitch. Continue with new color. Carry unused yarn inside if working in rounds.',
