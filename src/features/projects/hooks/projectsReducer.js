@@ -82,24 +82,31 @@ export function projectsReducer(state, action) {
         }
 
         case ACTIONS.UPDATE_PROJECT: {
-            const updatedProjects = state.projects.map(p =>
-                p.id === action.payload.id
-                    ? { ...action.payload, updated: new Date().toISOString() }
-                    : p
-            );
+            // ✅ FIX: Properly merge the payload with existing project data
+            const updatedProjects = state.projects.map(p => {
+                if (p.id === action.payload.id) {
+                    // Merge the existing project with the new data
+                    return {
+                        ...p,                           // Keep all existing fields
+                        ...action.payload,              // Apply updates from payload
+                        updated: new Date().toISOString()
+                    };
+                }
+                return p;
+            });
 
             return {
                 ...state,
                 projects: updatedProjects,
                 currentProject: state.currentProject?.id === action.payload.id
-                    ? { ...action.payload, updated: new Date().toISOString() }
+                    ? updatedProjects.find(p => p.id === action.payload.id)
                     : state.currentProject
             };
         }
 
         case ACTIONS.DELETE_PROJECT: {
             const filtered = state.projects.filter(p => p.id !== action.payload);
-            
+
             logger.success('Project deleted');
 
             return {
@@ -163,7 +170,7 @@ export function projectsReducer(state, action) {
                     const updatedProject = {
                         ...project,
                         components: project.components.map(component =>
-                            component.id === componentId 
+                            component.id === componentId
                                 ? { ...component, name, quantity, color, hook }
                                 : component
                         ),
@@ -175,7 +182,7 @@ export function projectsReducer(state, action) {
                 return project;
             });
 
-            logger.success('Component updated');
+            logger.success('Component updated', { name });
 
             return {
                 ...state,
@@ -267,7 +274,7 @@ export function projectsReducer(state, action) {
                                 return {
                                     ...component,
                                     rounds: component.rounds.map(round =>
-                                        round.id === roundId 
+                                        round.id === roundId
                                             ? { ...round, instruction, stitchCount }
                                             : round
                                     )
@@ -299,22 +306,25 @@ export function projectsReducer(state, action) {
 
             const updatedProjects = state.projects.map(project => {
                 if (project.id === projectId) {
-                    const updatedComponents = project.components.map(c => {
-                        if (c.id === componentId) {
-                            const filteredRounds = c.rounds.filter(r => r.id !== roundId);
-                            // Renumber remaining rounds
-                            const renumbered = filteredRounds.map((r, index) => ({
-                                ...r,
-                                roundNumber: index + 1
-                            }));
-                            return { ...c, rounds: renumbered };
-                        }
-                        return c;
-                    });
-
                     const updatedProject = {
                         ...project,
-                        components: updatedComponents,
+                        components: project.components.map(component => {
+                            if (component.id === componentId) {
+                                const filteredRounds = component.rounds.filter(r => r.id !== roundId);
+
+                                // Renumber remaining rounds
+                                const renumberedRounds = filteredRounds.map((round, index) => ({
+                                    ...round,
+                                    roundNumber: index + 1
+                                }));
+
+                                return {
+                                    ...component,
+                                    rounds: renumberedRounds
+                                };
+                            }
+                            return component;
+                        }),
                         updated: new Date().toISOString()
                     };
 
@@ -446,7 +456,7 @@ export function projectsReducer(state, action) {
                     const updatedProject = {
                         ...project,
                         components: project.components.map(component =>
-                            component.id === componentId 
+                            component.id === componentId
                                 ? { ...component, currentRound }
                                 : component
                         )
