@@ -4,17 +4,18 @@
  */
 
 export const getResumeData = () => {
-    const storage = localStorage.getItem('crochetgenius_state');
-    
+    // ✅ FIX: Changed from 'crochetgenius_state' to 'crochetgenius-projects' to match storage.js
+    const storage = localStorage.getItem('crochetgenius-projects');
+
     if (!storage) {
         return { hasActiveProject: false };
     }
 
     try {
-        const state = JSON.parse(storage);
-        const projects = state.projects || [];
+        // ✅ FIX: The data is stored as an array, not {projects: [...]}
+        const projects = JSON.parse(storage);
 
-        if (projects.length === 0) {
+        if (!Array.isArray(projects) || projects.length === 0) {
             return { hasActiveProject: false };
         }
 
@@ -26,13 +27,13 @@ export const getResumeData = () => {
         projects.forEach(project => {
             if (project.lastActivityAt) {
                 const timestamp = new Date(project.lastActivityAt).getTime();
-                
+
                 if (timestamp > mostRecentTimestamp) {
                     mostRecentTimestamp = timestamp;
                     mostRecentProject = project;
 
                     // Find the component with currentRound > 0 (or first component)
-                    mostRecentComponent = project.components.find(c => c.currentRound > 0) 
+                    mostRecentComponent = project.components.find(c => c.currentRound > 0)
                         || project.components[0];
                 }
             }
