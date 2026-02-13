@@ -17,6 +17,8 @@ function CrochetMode() {
     const [showContinueDialog, setShowContinueDialog] = useState(false);
     const [touchStart, setTouchStart] = useState(null);
     const [touchEnd, setTouchEnd] = useState(null);
+    // ✅ FIX: Store the completion number to display in the dialog
+    const [justCompletedNumber, setJustCompletedNumber] = useState(null);
 
     // Find project and component
     const project = state.projects.find(p => p.id === projectId);
@@ -90,6 +92,9 @@ function CrochetMode() {
             // Move to next round
             updateCurrentRound(currentRoundIndex + 1);
         } else {
+            // ✅ FIX: Calculate the NEW completion count BEFORE dispatching
+            const newCompletedCount = component.completedCount + 1;
+
             // Last round completed - increment component completion
             dispatch({
                 type: ACTIONS.INCREMENT_COMPONENT_COMPLETION,
@@ -99,8 +104,11 @@ function CrochetMode() {
                 }
             });
 
+            // ✅ FIX: Store the completion number for the dialog
+            setJustCompletedNumber(newCompletedCount);
+
             // Check if there are more to make
-            if (component.completedCount + 1 < component.quantity) {
+            if (newCompletedCount < component.quantity) {
                 // More to make - show continue dialog
                 setShowContinueDialog(true);
             } else {
@@ -115,11 +123,13 @@ function CrochetMode() {
         // Reset to first round and close dialog
         updateCurrentRound(0);
         setShowContinueDialog(false);
+        setJustCompletedNumber(null);
     };
 
     const handleStopCrocheting = () => {
         // Go back to project view
         setShowContinueDialog(false);
+        setJustCompletedNumber(null);
         navigate(`/project/${projectId}`);
     };
 
@@ -393,12 +403,13 @@ function CrochetMode() {
             {showContinueDialog && (
                 <div className={styles['help-modal-backdrop']}>
                     <div className={styles['help-modal']}>
+                        {/* ✅ FIX: Use the stored completion number instead of calculating from stale state */}
                         <h3 className={styles['help-title']}>
-                            {component.name} #{component.completedCount + 1} Complete! 🎉
+                            {component.name} #{justCompletedNumber} Complete! 🎉
                         </h3>
                         <p className={styles['help-description']} style={{ marginTop: '1rem', marginBottom: '1.5rem' }}>
-                            You've completed {component.completedCount + 1} of {component.quantity}.
-                            {component.completedCount + 1 < component.quantity && ' Ready to start the next one?'}
+                            You've completed {justCompletedNumber} of {component.quantity}.
+                            {justCompletedNumber < component.quantity && ' Ready to start the next one?'}
                         </p>
                         <div style={{ display: 'flex', gap: '0.75rem' }}>
                             <button
